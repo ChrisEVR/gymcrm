@@ -1,22 +1,40 @@
 package com.epam.gymcrm.models;
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
 import java.sql.Date;
 
 @Entity
 @Table(name = "trainee")
-@ToString @EqualsAndHashCode
-public class Trainee {
+public class Trainee extends User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter @Setter @Column(name = "id")
-    private long id;
-    @Getter @Setter @Column(name = "date_of_birth")
-    private Date date_of_birth;
-    @Getter @Setter @Column(name = "address")
+    @Column(name = "id")
+    private Long id;
+    @Column(name = "date_of_birth")
+    private Date dateOfBirth;
+    @Column(name = "address")
     private String address;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
 }
