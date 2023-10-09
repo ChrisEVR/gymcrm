@@ -1,20 +1,25 @@
 package com.epam.gymcrm.models;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*;
+import org.jetbrains.annotations.NotNull;
 
-@Getter @Setter
+@Entity
+@Table(name = "user")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long userId;
+    @Column(name = "first_name", nullable = false)
     private String firstName;
+    @Column(name = "last_name", nullable = false)
     private String lastName;
+    @Column(name = "username", nullable = false)
     private String username;
+    @Column(name = "password", nullable = false)
     private String password;
+    @Column(name = "is_active", nullable = false)
     private Boolean isActive;
 
     public Long getUserId() {
