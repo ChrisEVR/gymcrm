@@ -1,19 +1,13 @@
 package com.epam.gymcrm.dao;
 
 import com.epam.gymcrm.models.Trainee;
-import com.epam.gymcrm.models.TraineeTrainer;
-import com.epam.gymcrm.models.Trainer;
-import com.epam.gymcrm.models.Training;
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 @Repository
 @Transactional
@@ -37,6 +31,7 @@ public class TraineeDaoImp implements TraineeDao {
     @Override
     public Trainee updateTrainee(Trainee trainee){
         String queryString = "SELECT t FROM Trainee t WHERE t.username = :username";
+        logger.info("results--------: " + trainee);
 
         TypedQuery<Trainee> query = entityManager.createQuery(queryString, Trainee.class);
         query.setParameter("username", trainee.getUsername());
@@ -46,7 +41,11 @@ public class TraineeDaoImp implements TraineeDao {
             return null;
         }
 
-        return entityManager.merge(trainee);
+        Trainee trainee1 = entityManager.merge(trainee);
+
+        logger.info("results: " + trainee1.toString());
+
+        return trainee1;
     }
 
     @Override
@@ -106,8 +105,8 @@ public class TraineeDaoImp implements TraineeDao {
     }
 
     public List<Trainee> findByIdsAndName(List<Long> idList, String name){
-        String queryString = "SELECT u FROM User u " +
-                "WHERE u.id IN :idList AND CONCAT(u.firstName, ' ', u.lastName) LIKE :name";
+        String queryString = "SELECT t FROM Trainee t " +
+                "WHERE t.id IN :idList AND CONCAT(t.firstName, ' ', t.lastName) LIKE :name";
         TypedQuery<Trainee> query = entityManager.createQuery(queryString, Trainee.class);
 
         query.setParameter("idList", idList);
@@ -116,10 +115,8 @@ public class TraineeDaoImp implements TraineeDao {
         return query.getResultList();
     }
 
-    public void updateTrainerList(Trainee trainee, List<TraineeTrainer> trainerList){
-        trainee.setTrainers(trainerList);
-
-        entityManager.merge(trainee);
+    public void updateTrainerList(Trainee trainee){
+        entityManager.persist(trainee);
     }
 
 }
