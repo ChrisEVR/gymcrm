@@ -5,12 +5,14 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Entity
 @Table(name = "trainer")
 @PrimaryKeyJoinColumn(name = "user_id")
-public class Trainer extends User{
+public class Trainer extends User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
@@ -20,13 +22,9 @@ public class Trainer extends User{
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private TrainingType trainingType;
 
-    @ManyToMany
-    @JoinTable(
-            name = "trainee_trainer",
-            joinColumns = @JoinColumn(name = "trainer_id"),
-            inverseJoinColumns = @JoinColumn(name = "trainee_id")
-    )
-    private List<Trainee> trainees;
+    @ManyToMany(mappedBy = "trainers")
+    @JsonIgnore
+    private List<Trainee> trainees = new LinkedList<>();
 
     public TrainingType getTrainingType() {
         return trainingType;
@@ -52,12 +50,19 @@ public class Trainer extends User{
         this.trainees = trainees;
     }
 
+    public void addTrainee(Trainee trainee){
+        trainees.add(trainee);
+    }
+
+    public void removeTrainee(Trainee trainee){
+        trainees.remove(trainee);
+    }
+
     @Override
     public String toString() {
         return "Trainer{" +
                 "id=" + id +
                 ", trainingType=" + trainingType +
-                ", trainees=" + trainees +
                 '}';
     }
 }

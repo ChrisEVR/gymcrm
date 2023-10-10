@@ -1,8 +1,12 @@
 package com.epam.gymcrm.models;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "trainee")
@@ -15,19 +19,22 @@ public class Trainee extends User {
     private Date dateOfBirth;
     @Column(name = "address")
     private String address;
+    @ManyToMany
+    @JoinTable(
+            name = "trainee_trainer",
+            joinColumns = @JoinColumn(name = "trainee_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "trainer_id", referencedColumnName = "id")
+    )
+    private List<Trainer> trainers = new LinkedList<>();
 
-    public List<TraineeTrainer> getTrainers() {
+    public List<Trainer> getTrainers() {
         return trainers;
     }
 
-    public void setTrainers(List<TraineeTrainer> trainers) {
+    public void setTrainers(List<Trainer> trainers) {
         this.trainers = trainers;
     }
 
-    @OneToMany
-    private List<TraineeTrainer> trainers;
-//    @ManyToMany(mappedBy = "trainees")
-//    private List<Trainer> trainers;
 
     public Long getId() {
         return id;
@@ -47,11 +54,18 @@ public class Trainee extends User {
     public void setAddress(String address) {
         this.address = address;
     }
-//    public List<Trainer> getTrainers() {
-//        return trainers;
-//    }
-//    public void setTrainers(List<Trainer> trainers) {
-//        this.trainers = trainers;
-//    }
 
+    public void addTrainer(Trainer trainer){
+        this.trainers.add(trainer);
+    }
+
+    @Override
+    public String toString() {
+        return "Trainee{" +
+                "id=" + id +
+                ", dateOfBirth=" + dateOfBirth +
+                ", address='" + address + '\'' +
+                ", trainers=" + trainers +
+                '}';
+    }
 }
