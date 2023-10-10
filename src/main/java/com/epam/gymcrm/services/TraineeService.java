@@ -10,11 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.*;
 import java.sql.Date;
+import java.util.logging.Logger;
 
 @Service
 public class TraineeService {
-    @Autowired
-    private TraineeTrainerDaoImp traineeTrainerDaoImp;
+    private static final Logger logger = Logger.getLogger(TraineeService.class.getName());
     @Autowired
     private TraineeDaoImp traineeDaoImp;
     @Autowired
@@ -27,7 +27,9 @@ public class TraineeService {
     private UsernameUtil usernameUtil;
 
     public Trainee getTraineeProfile(String username){
-        return traineeDaoImp.findByUsername(username);
+        Trainee trainee = traineeDaoImp.findByUsername(username);
+        logger.info("trainee:" + trainee);
+        return trainee;
     }
 
     public List<Trainee> getTraineesProfile(){
@@ -117,12 +119,23 @@ public class TraineeService {
     }
 
     public List<Trainer> updateTrainerList(String username, List<String> trainersUsernameList){
-        List<Trainer> trainerList = trainerDaoImp.findAllByUsername(trainersUsernameList);
-        List<Long> idList = trainerList.stream().map(Trainer::getId).toList();
-        List<TraineeTrainer> traineeTrainerList = traineeTrainerDaoImp.findByTrainerId(idList);
         Trainee trainee = traineeDaoImp.findByUsername(username);
+        List<Trainer> trainerList = trainerDaoImp.findAllByUsername(trainersUsernameList);
 
-        traineeDaoImp.updateTrainerList(trainee, traineeTrainerList);
+        for (Trainer trainer :
+                trainerList) {
+            trainer.removeTrainee(trainee);
+        }
+        
+        trainee.setTrainers(trainerList);
+
+        for (Trainer trainer :
+                trainerList) {
+            trainer.addTrainee(trainee);
+        }
+        logger.info("Trainee:" + trainee);
+
+        traineeDaoImp.updateTrainee(trainee);
 
         return trainerList;
     }
