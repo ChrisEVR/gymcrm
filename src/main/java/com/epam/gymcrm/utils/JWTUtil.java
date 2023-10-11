@@ -1,5 +1,6 @@
 package com.epam.gymcrm.utils;
 
+import com.epam.gymcrm.config.AuthEntryPointJwt;
 import com.epam.gymcrm.models.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -16,9 +17,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.logging.Logger;
 
 @Component
 public class JWTUtil implements Serializable {
+    private static final Logger logger = Logger.getLogger(JWTUtil.class.getName());
+
     public static final Integer JWT_TOKEN_VALIDITY = 5 * 60 * 60;
 
     @Value("${app.jwt.secret}")
@@ -47,7 +51,7 @@ public class JWTUtil implements Serializable {
                 .parserBuilder()
                 .setSigningKey(getSignKey())
                 .build()
-                .parseClaimsJwt(token)
+                .parseClaimsJws(token)
                 .getBody();
     }
 
@@ -66,7 +70,7 @@ public class JWTUtil implements Serializable {
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
-                .signWith(getSignKey(), SignatureAlgorithm.HS512)
+                .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
