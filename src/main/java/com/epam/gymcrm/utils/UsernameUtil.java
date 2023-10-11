@@ -1,13 +1,12 @@
 package com.epam.gymcrm.utils;
 
-import com.epam.gymcrm.models.User;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
 public class UsernameUtil {
-    public String generateUsername(String firstName, String lastName, List<User> listUser){
+    public <T> String generateUsername(String firstName, String lastName, List<T> listUser){
         StringBuilder username;
 
         username = new StringBuilder(firstName + "." + lastName);
