@@ -14,10 +14,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/api/trainee")
 public class TraineeController {
+    private static final Logger logger = Logger.getLogger(TraineeController.class.getName());
     @Autowired
     private TraineeService traineeService;
 
@@ -29,6 +31,7 @@ public class TraineeController {
             @RequestParam(value = "address", required = false) String address
     ){
         Map<String, String> response = traineeService.createTrainee(firstName, lastName, dateOfBirth, address);
+        logger.info("response:" + response.toString());
         return ResponseEntity.ok(response);
     }
 
