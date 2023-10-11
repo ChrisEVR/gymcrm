@@ -126,4 +126,12 @@ public class TrainerDaoImp implements TrainerDao {
 
         return responseTrainers;
     }
+
+    public Trainer loadByUsername(String username){
+        String queryString = "SELECT t FROM Trainer t WHERE t.username = :username";
+        TypedQuery<Trainer> query = entityManager.createQuery(queryString, Trainer.class);
+        query.setParameter("username", username);
+
+        return query.getSingleResult();
+    }
 }
