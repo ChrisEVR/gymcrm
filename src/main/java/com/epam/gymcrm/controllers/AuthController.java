@@ -1,36 +1,60 @@
 package com.epam.gymcrm.controllers;
 
-import com.epam.gymcrm.models.User;
-//import com.epam.gymcrm.utils.JWTUtil;
+import com.epam.gymcrm.config.AuthEntryPointJwt;
+import com.epam.gymcrm.services.UserService;
+import com.epam.gymcrm.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.security.authentication.AuthenticationManager;
-//import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-//import org.springframework.security.core.Authentication;
-//import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
+import java.util.Map;
+import java.util.logging.Logger;
+
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/auth")
 public class AuthController {
-    //@Autowired
-    //private JWTUtil jwtUtil;
+    @Autowired
+    private JWTUtil jwtUtil;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private UserService userService;
 
-    //@Autowired
-    //private AuthenticationManager authenticationManagerBean;
+    private static final Logger logger = Logger.getLogger(AuthController.class.getName());
 
-//    @PostMapping("/login")
-//    public String authenticateUser(@RequestBody User user){
-//    Authentication authentication = authenticationManagerBean.authenticate(
-//            new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
-//        );
+    @GetMapping("/login")
+    public ResponseEntity<String> authenticateUser(
+            @RequestParam(value = "username") String username,
+            @RequestParam(value = "password") String password
+    ){
+        logger.info(username + "- - -" + password);
+        Authentication authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(username, password));
 
-//        if(!authentication.isAuthenticated()){
-//            throw new UsernameNotFoundException("Invalid user request");
-//        }
+        logger.info(username + "- - -" + password);
 
-//        return jwtUtil.generateToken(user.getUsername());
-//    }
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        String token = jwtUtil.generateToken(username);
+
+        return ResponseEntity.ok(token);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<String> registerTrainee(
+            @RequestParam(value = "firstName") String firstName,
+            @RequestParam(value = "lastName") String lastName,
+            @RequestParam(value = "dateOfBirth", required = false) Date dateOfBirth,
+            @RequestParam(value = "address", required = false) String address
+    ){
+        userService.createUser(firstName, lastName);
+        return ResponseEntity.ok("Successfully created!");
+    }
+
 }
