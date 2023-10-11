@@ -1,17 +1,15 @@
 package com.epam.gymcrm.models;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "trainee")
 @PrimaryKeyJoinColumn(name = "user_id")
-public class Trainee extends User {
+public class Trainee extends User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
@@ -66,6 +64,6 @@ public class Trainee extends User {
                 ", dateOfBirth=" + dateOfBirth +
                 ", address='" + address + '\'' +
                 ", trainers=" + trainers +
-                '}';
+                '}' + super.toString();
     }
 }
