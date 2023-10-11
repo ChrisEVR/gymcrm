@@ -22,12 +22,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.util.List;
 import java.util.logging.Logger;
 
 @Configuration
-@EnableWebSecurity
+//@EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
     private static final Logger logger = Logger.getLogger(SecurityConfig.class.getName());
@@ -38,27 +39,27 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService(){
         return new UserService();
     }
-//    @Bean
-//    public JwtAuthFilter authenticationJwtTokenFilter(){
-//        return new JwtAuthFilter();
-//    }
+    @Bean
+    public JwtAuthFilter authenticationJwtTokenFilter(){
+        return new JwtAuthFilter();
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity)
         throws Exception {
-        logger.info("Config1-----------");
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
-                .exceptionHandling(exception -> exception.authenticationEntryPoint(authEntryPointJwt))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize ->
                     authorize
                             .requestMatchers("/api/trainer/register").permitAll()
                             .requestMatchers("/api/trainee/register").permitAll()
-                            .requestMatchers("/api/**/**").permitAll()
+                            .requestMatchers("/api/auth/**").permitAll()
                             .anyRequest().authenticated()
                 );
 
+        httpSecurity.authenticationProvider(authenticationProvider());
+        httpSecurity.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
     }
@@ -71,8 +72,10 @@ public class SecurityConfig {
     @Bean
     public AuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+
         authenticationProvider.setUserDetailsService(userDetailsService());
         authenticationProvider.setPasswordEncoder(passwordEncoder());
+
         return authenticationProvider;
     }
 
