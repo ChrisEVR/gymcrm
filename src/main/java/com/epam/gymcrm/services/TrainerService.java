@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class TrainerService implements UserDetailsService {
+public class TrainerService {
     @Autowired
     TrainerDaoImp trainerDaoImp;
     @Autowired
@@ -57,17 +57,19 @@ public class TrainerService implements UserDetailsService {
                 lastName
         );
 
+        String password = passwordUtil.generatePassword();
+
         trainer.setFirstName(firstName);
         trainer.setLastName(lastName);
         trainer.setUsername(usernameUtil.generateUsername(trainer.getFirstName(), trainer.getLastName(), trainers));
-        trainer.setPassword(passwordEncoder.encode(passwordUtil.generatePassword()));
+        trainer.setPassword(passwordEncoder.encode(password));
         trainer.setActive(true);
         trainer.setTrainingType(trainingType);
 
         registeredTrainer = trainerDaoImp.createTrainer(trainer);
 
         responseMap.put("username", registeredTrainer.getUsername());
-        responseMap.put("password", registeredTrainer.getPassword());
+        responseMap.put("password", password);
 
         return responseMap;
     }
@@ -112,8 +114,7 @@ public class TrainerService implements UserDetailsService {
         );
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public Trainer loadUserByUsername(String username) throws UsernameNotFoundException {
         return trainerDaoImp.loadByUsername(username);
     }
 }

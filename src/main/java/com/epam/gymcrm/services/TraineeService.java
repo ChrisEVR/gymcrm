@@ -12,12 +12,15 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
+
 import java.util.*;
 import java.sql.Date;
 import java.util.logging.Logger;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @Service
-public class TraineeService implements UserDetailsService {
+public class TraineeService {
     private static final Logger logger = Logger.getLogger(TraineeService.class.getName());
     @Autowired
     private TraineeDaoImp traineeDaoImp;
@@ -35,7 +38,7 @@ public class TraineeService implements UserDetailsService {
 
     public Trainee getTraineeProfile(String username){
         Trainee trainee = traineeDaoImp.findByUsername(username);
-        logger.info("trainee:" + trainee);
+        logger.info("get trainee:" + trainee);
         return trainee;
     }
 
@@ -56,16 +59,25 @@ public class TraineeService implements UserDetailsService {
                 firstName,
                 lastName
         );
+        String password = passwordUtil.generatePassword();
+
         trainee.setFirstName(firstName);
         trainee.setLastName(lastName);
         trainee.setUsername(usernameUtil.generateUsername(trainee.getFirstName(), trainee.getLastName(), trainees));
-        trainee.setPassword(passwordEncoder.encode(passwordUtil.generatePassword()));
+        trainee.setPassword(passwordEncoder.encode(password));
         trainee.setDateOfBirth(dateOfBirth);
         trainee.setAddress(address);
         trainee.setActive(true);
+
         registeredTrainee = traineeDaoImp.createTrainee(trainee);
-        responseMap.put("username", registeredTrainee.getUsername());
-        responseMap.put("password", registeredTrainee.getPassword());
+
+        logger.info("registeredTrainee:" + registeredTrainee.toString());
+
+        responseMap.put("username", trainee.getUsername());
+        responseMap.put("password", password);
+
+        logger.info("responseMap:" + responseMap);
+
         return responseMap;
     }
 
@@ -127,17 +139,17 @@ public class TraineeService implements UserDetailsService {
         Trainee trainee = traineeDaoImp.findByUsername(username);
         List<Trainer> trainerList = trainerDaoImp.findAllByUsername(trainersUsernameList);
 
-        for (Trainer trainer :
-                trainerList) {
-            trainer.removeTrainee(trainee);
-        }
-        
-        trainee.setTrainers(trainerList);
-
-        for (Trainer trainer :
-                trainerList) {
-            trainer.addTrainee(trainee);
-        }
+//        for (Trainer trainer :
+//                trainerList) {
+//            trainer.removeTrainee(trainee);
+//        }
+//
+//        trainee.setTrainers(trainerList);
+//
+//        for (Trainer trainer :
+//                trainerList) {
+//            trainer.addTrainee(trainee);
+//        }
         logger.info("Trainee:" + trainee);
 
         traineeDaoImp.updateTrainee(trainee);
@@ -145,8 +157,7 @@ public class TraineeService implements UserDetailsService {
         return trainerList;
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public Trainee loadUserByUsername(String username) throws UsernameNotFoundException {
         return traineeDaoImp.loadByUsername(username);
     }
 }
