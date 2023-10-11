@@ -6,6 +6,6 @@ import java.util.Optional;
 
 public interface TrainerDao {
     Optional<Trainer> getTrainer(Long id);
-    Trainer createTrainer(Trainer trainer, Long specialization);
+    Trainer createTrainer(Trainer trainer);
     Trainer updateTrainer(Trainer newTrainer);
 }

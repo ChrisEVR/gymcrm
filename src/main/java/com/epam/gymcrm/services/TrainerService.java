@@ -11,6 +11,10 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -21,7 +25,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class TrainerService {
+public class TrainerService implements UserDetailsService {
     @Autowired
     TrainerDaoImp trainerDaoImp;
     @Autowired
@@ -34,6 +38,9 @@ public class TrainerService {
     PasswordUtil passwordUtil;
     @Autowired
     UsernameUtil usernameUtil;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     public Map<String, String> createTrainer(
             String firstName,
@@ -53,11 +60,11 @@ public class TrainerService {
         trainer.setFirstName(firstName);
         trainer.setLastName(lastName);
         trainer.setUsername(usernameUtil.generateUsername(trainer.getFirstName(), trainer.getLastName(), trainers));
-        trainer.setPassword(passwordUtil.generatePassword());
+        trainer.setPassword(passwordEncoder.encode(passwordUtil.generatePassword()));
         trainer.setActive(true);
         trainer.setTrainingType(trainingType);
 
-        registeredTrainer = trainerDaoImp.createTrainer(trainer, specialization);
+        registeredTrainer = trainerDaoImp.createTrainer(trainer);
 
         responseMap.put("username", registeredTrainer.getUsername());
         responseMap.put("password", registeredTrainer.getPassword());
@@ -103,5 +110,10 @@ public class TrainerService {
                 periodFrom.toString(),
                 periodTo.toString()
         );
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return trainerDaoImp.loadByUsername(username);
     }
 }

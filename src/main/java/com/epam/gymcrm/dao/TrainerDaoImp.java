@@ -28,7 +28,7 @@ public class TrainerDaoImp implements TrainerDao {
     }
 
     @Override
-    public Trainer createTrainer(Trainer trainer, Long specialization) {
+    public Trainer createTrainer(Trainer trainer) {
         entityManager.persist(trainer);
         return trainer;
     }
