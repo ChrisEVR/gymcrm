@@ -23,11 +23,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.logging.Logger;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
-    private static final Logger logger = Logger.getLogger(AuthEntryPointJwt.class.getName());
+    private static final Logger logger = Logger.getLogger(JwtAuthFilter.class.getName());
 
     @Autowired
     private JWTUtil jwtUtil;
@@ -41,9 +42,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             @NotNull HttpServletResponse response,
             @NotNull FilterChain filterChain
     ) throws ServletException, IOException {
+        logger.info("request--:" + request);
         String authHeader = request.getHeader("Authorization");
         String token = null;
         String username = null;
+        logger.info("authHeader--:" + authHeader);
 
         if(authHeader != null && authHeader.startsWith("Bearer ")){
             token = authHeader.substring(7);
@@ -55,11 +58,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             if(jwtUtil.validateToken(token, userDetails)){
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null
+                        userDetails.getUsername(),
+                        null,
+                        new LinkedList<>()
                 );
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+
+                logger.info("authToken--" + authToken);
             }
         }
 
