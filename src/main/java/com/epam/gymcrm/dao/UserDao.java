@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
-public interface UserDao extends JpaRepository<User, Long> {
-    List<User> findByFirstNameAndLastName(String firstName, String lastName);
+public interface UserDao  {
+    List<User> findByFirstnameAndLastname(String firstName, String lastName);
+    User loadByUsername(String username);
 }
