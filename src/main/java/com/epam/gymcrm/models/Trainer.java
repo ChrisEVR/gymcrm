@@ -7,15 +7,12 @@ import org.hibernate.annotations.OnDelete;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "trainer")
 @PrimaryKeyJoinColumn(name = "user_id")
-public class Trainer extends User implements UserDetails {
+public class Trainer extends User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
@@ -25,9 +22,9 @@ public class Trainer extends User implements UserDetails {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private TrainingType trainingType;
 
-    @ManyToMany(mappedBy = "trainers")
-    @JsonIgnore
-    private List<Trainee> trainees = new LinkedList<>();
+//    @ManyToMany(mappedBy = "trainers", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    @JsonIgnore
+//    private List<Trainee> trainees = new LinkedList<>();
 
     public TrainingType getTrainingType() {
         return trainingType;
@@ -45,26 +42,26 @@ public class Trainer extends User implements UserDetails {
         this.id = id;
     }
 
-    public List<Trainee> getTrainees() {
-        return trainees;
-    }
+//    public List<Trainee> getTrainees() {
+//        return trainees;
+//    }
 
-    public void setTrainees(List<Trainee> trainees) {
-        this.trainees = trainees;
-    }
+//    public void setTrainees(List<Trainee> trainees) {
+//        this.trainees = trainees;
+//    }
 
-    public void addTrainee(Trainee trainee){
-        trainees.add(trainee);
-    }
+//    public void addTrainee(Trainee trainee){
+//        trainees.add(trainee);
+//    }
 
-    public void removeTrainee(Trainee trainee){
-        trainees.remove(trainee);
-    }
+//    public void removeTrainee(Trainee trainee){
+//        trainees.remove(trainee);
+//    }
 
     @Override
     public String toString() {
         return "Trainer{" +
-                "id=" + id +
+//                "id=" + id +
                 ", trainingType=" + trainingType +
                 '}';
     }

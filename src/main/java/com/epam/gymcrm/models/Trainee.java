@@ -1,15 +1,18 @@
 package com.epam.gymcrm.models;
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.sql.Date;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "trainee")
 @PrimaryKeyJoinColumn(name = "user_id")
-public class Trainee extends User implements UserDetails {
+public class Trainee extends User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
@@ -17,21 +20,21 @@ public class Trainee extends User implements UserDetails {
     private Date dateOfBirth;
     @Column(name = "address")
     private String address;
-    @ManyToMany
-    @JoinTable(
-            name = "trainee_trainer",
-            joinColumns = @JoinColumn(name = "trainee_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "trainer_id", referencedColumnName = "id")
-    )
-    private List<Trainer> trainers = new LinkedList<>();
+//    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    @JoinTable(
+//            name = "trainee_trainer",
+//            joinColumns = @JoinColumn(name = "trainee_id", referencedColumnName = "id"),
+//            inverseJoinColumns = @JoinColumn(name = "trainer_id", referencedColumnName = "id")
+//    )
+//    private List<Trainer> trainers = new LinkedList<>();
 
-    public List<Trainer> getTrainers() {
-        return trainers;
-    }
+//    public List<Trainer> getTrainers() {
+//        return trainers;
+//    }
 
-    public void setTrainers(List<Trainer> trainers) {
-        this.trainers = trainers;
-    }
+//    public void setTrainers(List<Trainer> trainers) {
+//        this.trainers = trainers;
+//    }
 
 
     public Long getId() {
@@ -53,9 +56,9 @@ public class Trainee extends User implements UserDetails {
         this.address = address;
     }
 
-    public void addTrainer(Trainer trainer){
-        this.trainers.add(trainer);
-    }
+//    public void addTrainer(Trainer trainer){
+//        this.trainers.add(trainer);
+//    }
 
     @Override
     public String toString() {
@@ -63,7 +66,7 @@ public class Trainee extends User implements UserDetails {
                 "id=" + id +
                 ", dateOfBirth=" + dateOfBirth +
                 ", address='" + address + '\'' +
-                ", trainers=" + trainers +
+//                ", trainers=" + trainers +
                 '}' + super.toString();
     }
 }
