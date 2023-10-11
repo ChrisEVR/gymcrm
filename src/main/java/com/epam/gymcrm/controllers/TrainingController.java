@@ -11,12 +11,12 @@ import org.springframework.web.servlet.function.ServerResponse;
 import java.sql.Date;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/training")
 public class TrainingController {
     @Autowired
     private TrainingService trainingService;
 
-    @PostMapping("/training/register")
+    @PostMapping("/register")
     public ResponseEntity.BodyBuilder registerTraining(
             @RequestParam("traineeUsername") String traineeUsername,
             @RequestParam("trainerUsername") String trainerUsername,

@@ -16,12 +16,12 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/trainee")
 public class TraineeController {
     @Autowired
     private TraineeService traineeService;
 
-    @PostMapping("/trainee/register")
+    @PostMapping("/register")
     public ResponseEntity<Map<String, String>> registerTrainee(
             @RequestParam(value = "firstName") String firstName,
             @RequestParam(value = "lastName") String lastName,
@@ -32,13 +32,13 @@ public class TraineeController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/trainee/not-assigned-trainers")
+    @GetMapping("/not-assigned-trainers")
     public ResponseEntity<List<Trainer>> getNotAssignedTrainers(@RequestParam(value = "username") String username){
         List<Trainer> response = traineeService.getNotAssignedTrainers(username);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/trainee/training-list")
+    @GetMapping("/training-list")
     public ResponseEntity<List<Training>> getTrainingList(
             @RequestParam(value = "username") String username,
             @RequestParam(value = "trainerName") String trainerName,
@@ -47,20 +47,20 @@ public class TraineeController {
     ){
         return ResponseEntity.ok(traineeService.getTrainingList(username, trainerName, periodFrom, periodTo));
     }
-    @GetMapping("/trainee/{username}")
+    @GetMapping("/{username}")
     public ResponseEntity<Trainee> getTraineeProfile(@PathVariable String username){
         return ResponseEntity.ok(traineeService.getTraineeProfile(username));
     }
-    @GetMapping("/trainee/all")
+    @GetMapping("/all")
     public ResponseEntity<List<Trainee>> getAllTraineeProfile(){
         return ResponseEntity.ok(traineeService.getTraineesProfile());
     }
-    @DeleteMapping("/trainee/{username}")
+    @DeleteMapping("/{username}")
     public ResponseEntity<String> deleteTrainee(@PathVariable String username){
         traineeService.deleteTrainee(username);
         return ResponseEntity.ok("Trainee deleted successfully.");
     }
-    @PutMapping("/trainee/update")
+    @PutMapping("/update")
     public ResponseEntity<Trainee> updateTrainee(
             @RequestParam(value = "username") String username,
             @RequestParam(value = "firstName") String firstName,
@@ -74,7 +74,7 @@ public class TraineeController {
         );
     }
 
-    @PatchMapping("/trainee/activate-deactivate")
+    @PatchMapping("/activate-deactivate")
     public ResponseEntity<String> activateDeactivateTrainee(
             @RequestParam("username") String username,
             @RequestParam("isActive") Boolean isActive
@@ -83,7 +83,7 @@ public class TraineeController {
         return ResponseEntity.ok("200 OK");
     }
 
-    @PutMapping("/trainee/update-list")
+    @PutMapping("/update-list")
     public ResponseEntity<List<Trainer>> updateTrainerList(
             @RequestParam("username") String username,
             @RequestParam("trainersList") List<String> trainersList

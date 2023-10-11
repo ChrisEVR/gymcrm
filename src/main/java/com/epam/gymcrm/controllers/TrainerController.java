@@ -13,12 +13,12 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/trainer")
 public class TrainerController {
     @Autowired
     private TrainerService trainerService;
 
-    @PostMapping("/trainer/register")
+    @PostMapping("/register")
     public ResponseEntity<Map<String, String>> registerTrainer(
             @RequestParam(value = "firstName") String firstName,
             @RequestParam(value = "lastName") String lastName,
@@ -27,7 +27,7 @@ public class TrainerController {
         Map<String, String> response = trainerService.createTrainer(firstName, lastName, specialization);
         return ResponseEntity.ok(response);
     }
-    @GetMapping("/trainer/training-list")
+    @GetMapping("/training-list")
     public ResponseEntity<List<Training>> getTrainingList(
             @RequestParam(value = "username") String username,
             @RequestParam(value = "traineeName", required = false) String traineeName,
@@ -36,7 +36,7 @@ public class TrainerController {
     ){
         return ResponseEntity.ok(trainerService.getTrainingList(username, traineeName, periodFrom, periodTo));
     }
-    @PatchMapping("/trainer/activate-deactivate")
+    @PatchMapping("/activate-deactivate")
     public ResponseEntity<String> activateDeactivateTrainer(
             @RequestParam(value = "username") String username,
             @RequestParam(value = "isActive") Boolean isActive
@@ -46,7 +46,7 @@ public class TrainerController {
         return ResponseEntity.ok("200 OK");
     }
 
-    @PutMapping("/trainer/update")
+    @PutMapping("/update")
     public ResponseEntity<Trainer> updateTrainer(
             @RequestParam(value = "username") String username,
             @RequestParam(value = "firstName") String firstName,
