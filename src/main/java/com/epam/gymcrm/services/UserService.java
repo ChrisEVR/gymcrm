@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService implements UserDetailsService{
     @Autowired
     UserDaoImp userDaoImp;
     @Autowired
@@ -23,11 +23,6 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userDaoImp.loadByUsername(username);
-    }
 
     public void createUser(
             String firstname,
@@ -41,5 +36,10 @@ public class UserService implements UserDetailsService {
         user.setPassword(passwordEncoder.encode(passwordUtil.generatePassword()));
         user.setActive(true);
         userDaoImp.createUser(user);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userDaoImp.loadByUsername(username);
     }
 }
