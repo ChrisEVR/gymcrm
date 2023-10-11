@@ -24,7 +24,9 @@ public class TraineeDaoImp implements TraineeDao {
 
     @Override
     public Trainee createTrainee(Trainee trainee) {
+        logger.info("trainee:---" + trainee.toString());
         entityManager.persist(trainee);
+
         return trainee;
     }
 
@@ -113,6 +115,14 @@ public class TraineeDaoImp implements TraineeDao {
         query.setParameter("name", "%" + name + "%");
 
         return query.getResultList();
+    }
+
+    public Trainee loadByUsername(String username){
+        String queryString = "SELECT t FROM Trainee t WHERE t.username = :username";
+        TypedQuery<Trainee> query = entityManager.createQuery(queryString, Trainee.class);
+        query.setParameter("username", username);
+
+        return query.getSingleResult();
     }
 
     public void updateTrainerList(Trainee trainee){

@@ -7,13 +7,17 @@ import com.epam.gymcrm.utils.UsernameUtil;
 import jakarta.persistence.EntityNotFoundException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.*;
 import java.sql.Date;
 import java.util.logging.Logger;
 
 @Service
-public class TraineeService {
+public class TraineeService implements UserDetailsService {
     private static final Logger logger = Logger.getLogger(TraineeService.class.getName());
     @Autowired
     private TraineeDaoImp traineeDaoImp;
@@ -25,6 +29,9 @@ public class TraineeService {
     private PasswordUtil passwordUtil;
     @Autowired
     private UsernameUtil usernameUtil;
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
 
     public Trainee getTraineeProfile(String username){
         Trainee trainee = traineeDaoImp.findByUsername(username);
@@ -42,28 +49,26 @@ public class TraineeService {
             Date dateOfBirth,
             String address
     ){
-        Trainee registeredTrainee, trainee = new Trainee();
+        Trainee registeredTrainee;
+        Trainee trainee = new Trainee();
         Map<String, String> responseMap = new HashMap<>();
         List<Trainee> trainees = traineeDaoImp.findByFirstnameAndLastname(
                 firstName,
                 lastName
         );
-
         trainee.setFirstName(firstName);
         trainee.setLastName(lastName);
         trainee.setUsername(usernameUtil.generateUsername(trainee.getFirstName(), trainee.getLastName(), trainees));
-        trainee.setPassword(passwordUtil.generatePassword());
+        trainee.setPassword(passwordEncoder.encode(passwordUtil.generatePassword()));
         trainee.setDateOfBirth(dateOfBirth);
         trainee.setAddress(address);
         trainee.setActive(true);
-
         registeredTrainee = traineeDaoImp.createTrainee(trainee);
-
         responseMap.put("username", registeredTrainee.getUsername());
         responseMap.put("password", registeredTrainee.getPassword());
-
         return responseMap;
     }
+
 
     public Trainee updateTrainee(
             String username,
@@ -138,5 +143,10 @@ public class TraineeService {
         traineeDaoImp.updateTrainee(trainee);
 
         return trainerList;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return traineeDaoImp.loadByUsername(username);
     }
 }
