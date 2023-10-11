@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
@@ -38,10 +39,14 @@ public class AuthController {
                 .authenticate(new UsernamePasswordAuthenticationToken(username, password));
 
         logger.info(username + "- - -" + password);
+        String token;
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        String token = jwtUtil.generateToken(username);
+        if(authentication.isAuthenticated()){
+            token = jwtUtil.generateToken(username);
+        } else {
+            throw new UsernameNotFoundException("Invalid user request!");
+        }
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return ResponseEntity.ok(token);
     }
