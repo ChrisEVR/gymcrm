@@ -55,6 +55,7 @@ public class SecurityConfig {
                             .requestMatchers("/api/trainer/register").permitAll()
                             .requestMatchers("/api/trainee/register").permitAll()
                             .requestMatchers("/api/auth/**").permitAll()
+                            .requestMatchers("/actuator/**").permitAll()
                             .anyRequest().authenticated()
                 );
 
