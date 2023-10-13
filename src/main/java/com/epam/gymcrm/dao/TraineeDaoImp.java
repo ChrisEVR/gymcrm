@@ -68,18 +68,6 @@ public class TraineeDaoImp implements TraineeDao {
         return query.getResultList();
     };
 
-    public Integer activateDeactivateTrainee(String username, Boolean isActive){
-        String queryString = "UPDATE Trainee t SET t.isActive = :isActive " +
-                "WHERE t.username = :username";
-        Query query = entityManager.createQuery(queryString);
-
-        query
-                .setParameter("isActive", isActive)
-                .setParameter("username", username);
-
-        return query.executeUpdate();
-    }
-
     public Trainee findByUsername(String username){
         String queryString = "SELECT t " +
                 "FROM Trainee t " +
