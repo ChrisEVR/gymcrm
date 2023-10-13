@@ -28,7 +28,7 @@ public class TrainingTypeDaoImp implements TrainingTypeDao {
     }
 
     public TrainingType findByName(String name){
-        String queryString = "SELECT tt FROM TrainingType tt WHERE tt.training_type_name = :name";
+        String queryString = "SELECT tt FROM TrainingType tt WHERE tt.trainingTypeName = :name";
         TypedQuery<TrainingType> query = entityManager.createQuery(queryString, TrainingType.class);
 
         query.setParameter("name", name);
