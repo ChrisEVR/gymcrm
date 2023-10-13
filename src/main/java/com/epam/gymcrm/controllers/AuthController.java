@@ -51,15 +51,15 @@ public class AuthController {
         return ResponseEntity.ok(token);
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<String> registerTrainee(
-            @RequestParam(value = "firstName") String firstName,
-            @RequestParam(value = "lastName") String lastName,
-            @RequestParam(value = "dateOfBirth", required = false) Date dateOfBirth,
-            @RequestParam(value = "address", required = false) String address
+    @PutMapping("/change")
+    public ResponseEntity<String> changeLogin(
+            @RequestParam(value = "username") String username,
+            @RequestParam(value = "oldPassword") String oldPassword,
+            @RequestParam(value = "newPassword") String newPassword
     ){
-        userService.createUser(firstName, lastName);
-        return ResponseEntity.ok("Successfully created!");
+
+        userService.updatePassword(username, oldPassword, newPassword);
+        return ResponseEntity.ok("Successfully updated!");
     }
 
 }
