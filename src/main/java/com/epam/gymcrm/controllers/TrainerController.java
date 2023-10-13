@@ -43,7 +43,7 @@ public class TrainerController {
     ){
         trainerService.activateDeactivateTrainer(username, isActive);
 
-        return ResponseEntity.ok("200 OK");
+        return ResponseEntity.ok("Status updated successfully!");
     }
 
     @PutMapping("/update")
@@ -57,5 +57,10 @@ public class TrainerController {
         return ResponseEntity.ok(
                 trainerService.updateTrainer(username, firstName, lastName, specialization, isActive)
         );
+    }
+
+    @GetMapping("/{username}")
+    public ResponseEntity<Trainer> getTrainerProfile(@PathVariable String username){
+        return ResponseEntity.ok(trainerService.getTrainerProfile(username));
     }
 }
