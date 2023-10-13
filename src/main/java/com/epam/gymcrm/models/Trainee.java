@@ -1,17 +1,23 @@
 package com.epam.gymcrm.models;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Cascade;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.sql.Date;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "trainee")
 @PrimaryKeyJoinColumn(name = "user_id")
+@JsonIgnoreProperties(value = {
+        "enabled",
+        "accountNonExpired",
+        "credentialsNonExpired",
+        "accountNonLocked",
+        "authorities"
+})
 public class Trainee extends User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -20,22 +26,35 @@ public class Trainee extends User {
     private Date dateOfBirth;
     @Column(name = "address")
     private String address;
-//    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//    @JoinTable(
-//            name = "trainee_trainer",
-//            joinColumns = @JoinColumn(name = "trainee_id", referencedColumnName = "id"),
-//            inverseJoinColumns = @JoinColumn(name = "trainer_id", referencedColumnName = "id")
-//    )
-//    private List<Trainer> trainers = new LinkedList<>();
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "trainee_trainer",
+            joinColumns = @JoinColumn(name = "trainee_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "trainer_id", referencedColumnName = "id")
+    )
+    private List<Trainer> trainers;
 
-//    public List<Trainer> getTrainers() {
-//        return trainers;
-//    }
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            mappedBy = "trainee"
+    )
+    private List<Training> trainings;
 
-//    public void setTrainers(List<Trainer> trainers) {
-//        this.trainers = trainers;
-//    }
+    public List<Training> getTrainings() {
+        return trainings;
+    }
 
+    public void setTrainings(List<Training> trainings) {
+        this.trainings = trainings;
+    }
+
+    public List<Trainer> getTrainers() {
+        return trainers;
+    }
+
+    public void setTrainers(List<Trainer> trainers) {
+        this.trainers = trainers;
+    }
 
     public Long getId() {
         return id;
@@ -56,9 +75,20 @@ public class Trainee extends User {
         this.address = address;
     }
 
-//    public void addTrainer(Trainer trainer){
-//        this.trainers.add(trainer);
-//    }
+    public void addTrainer(Trainer trainer){
+        if(this.trainers == null){
+            this.trainers = new LinkedList<>();
+        }
+        this.trainers.add(trainer);
+    }
+
+    public void addTraining(Training training){
+        if(this.trainings == null){
+            this.trainings = new LinkedList<>();
+        }
+
+        trainings.add(training);
+    }
 
     @Override
     public String toString() {
