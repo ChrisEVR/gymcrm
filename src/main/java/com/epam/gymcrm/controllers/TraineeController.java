@@ -44,9 +44,9 @@ public class TraineeController {
     @GetMapping("/training-list")
     public ResponseEntity<List<Training>> getTrainingList(
             @RequestParam(value = "username") String username,
-            @RequestParam(value = "trainerName") String trainerName,
-            @RequestParam(value = "periodFrom") Date periodFrom,
-            @RequestParam(value = "periodTo") Date periodTo
+            @RequestParam(value = "trainerName", required = false) String trainerName,
+            @RequestParam(value = "periodFrom", required = false) Date periodFrom,
+            @RequestParam(value = "periodTo", required = false) Date periodTo
     ){
         return ResponseEntity.ok(traineeService.getTrainingList(username, trainerName, periodFrom, periodTo));
     }
@@ -83,7 +83,7 @@ public class TraineeController {
             @RequestParam("isActive") Boolean isActive
     ) {
         traineeService.activateDeactivateTrainee(username, isActive);
-        return ResponseEntity.ok("200 OK");
+        return ResponseEntity.ok("Status updated successfully!");
     }
 
     @PutMapping("/update-list")
