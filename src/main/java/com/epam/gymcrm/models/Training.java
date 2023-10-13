@@ -1,6 +1,9 @@
 package com.epam.gymcrm.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.sql.Date;
 
@@ -13,24 +16,48 @@ public class Training {
     private Long id;
 
     @Column(name = "training_date")
-    private Date training_date;
+    private Date trainingDate;
 
     @Column(name = "training_duration")
-    private Long training_duration;
+    private Long trainingDuration;
 
     @Column(name = "training_name")
-    private String training_name;
+    private String trainingName;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "trainee_id", nullable = false)
+    @ManyToOne(
+            fetch = FetchType.LAZY,
+            optional = false
+    )
+    @JoinColumn(
+            name = "trainee_id",
+            referencedColumnName = "id",
+            nullable = false
+    )
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Trainee trainee;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "trainer_id", nullable = false)
+    @ManyToOne(
+            fetch = FetchType.LAZY,
+            optional = false
+    )
+    @JoinColumn(
+            name = "trainer_id",
+            referencedColumnName = "id",
+            nullable = false
+    )
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Trainer trainer;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "training_type_id", nullable = false)
+    @ManyToOne(
+            fetch = FetchType.LAZY,
+            optional = false
+    )
+    @JoinColumn(
+            name = "training_type_id",
+            referencedColumnName = "id",
+            nullable = false
+    )
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private TrainingType trainingType;
 
 
@@ -42,28 +69,28 @@ public class Training {
         this.id = id;
     }
 
-    public String getTraining_name() {
-        return training_name;
+    public String getTrainingName() {
+        return trainingName;
     }
 
-    public void setTraining_name(String training_name) {
-        this.training_name = training_name;
+    public void setTrainingName(String training_name) {
+        this.trainingName = training_name;
     }
 
-    public Date getTraining_date() {
-        return training_date;
+    public Date getTrainingDate() {
+        return trainingDate;
     }
 
-    public void setTraining_date(Date training_date) {
-        this.training_date = training_date;
+    public void setTrainingDate(Date training_date) {
+        this.trainingDate = training_date;
     }
 
-    public Long getTraining_duration() {
-        return training_duration;
+    public Long getTrainingDuration() {
+        return trainingDuration;
     }
 
-    public void setTraining_duration(Long training_duration) {
-        this.training_duration = training_duration;
+    public void setTrainingDuration(Long training_duration) {
+        this.trainingDuration = training_duration;
     }
 
     public Trainee getTrainee() {
@@ -88,5 +115,18 @@ public class Training {
 
     public void setTrainingType(TrainingType trainingType) {
         this.trainingType = trainingType;
+    }
+
+    @Override
+    public String toString() {
+        return "Training{" +
+                "id=" + id +
+                ", trainingDate=" + trainingDate +
+                ", trainingDuration=" + trainingDuration +
+                ", trainingName='" + trainingName + '\'' +
+                ", trainee=" + trainee +
+                ", trainer=" + trainer +
+                ", trainingType=" + trainingType +
+                '}';
     }
 }
