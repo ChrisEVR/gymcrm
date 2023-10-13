@@ -38,6 +38,18 @@ public class UserService implements UserDetailsService{
         userDaoImp.createUser(user);
     }
 
+    public void updatePassword(String username, String oldPassword, String newPassword){
+        User user = userDaoImp.loadByUsername(username);
+
+        if(passwordEncoder.matches(oldPassword, user.getPassword())){
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userDaoImp.updateUser(user);
+
+        }else{
+            throw new UsernameNotFoundException("Username not found");
+        }
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userDaoImp.loadByUsername(username);
