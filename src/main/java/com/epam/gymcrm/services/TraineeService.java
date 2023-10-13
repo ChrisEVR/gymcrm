@@ -81,7 +81,6 @@ public class TraineeService {
         return responseMap;
     }
 
-
     public Trainee updateTrainee(
             String username,
             String firstName,
@@ -110,24 +109,20 @@ public class TraineeService {
     }
 
     public void activateDeactivateTrainee(String username, Boolean isActive){
-        Integer updatedRows = traineeDaoImp.activateDeactivateTrainee(username, isActive);
-
-        if(updatedRows == 0){
-            throw new EntityNotFoundException("Trainee not found with given username");
-        }
+        Trainee trainee = traineeDaoImp.findByUsername(username);
+        trainee.setActive(isActive);
+        traineeDaoImp.updateTrainee(trainee);
     }
 
     public List<Training> getTrainingList(String username, String trainerName, Date periodFrom, Date periodTo){
         Trainee trainee = traineeDaoImp.findByUsername(username);
-        List<Long> trainersId = trainerDaoImp.findAllTrainersId();
-        List<Trainer> trainerList = trainerDaoImp.findByIdsAndName(trainersId, trainerName);
-        List<Long> idList = trainerList.stream().map(Trainer::getId).toList();
 
-        return trainingDaoImp.getTrainingsByTraineeId(
+        return trainingDaoImp.getTrainingsByUserId(
+                trainee,
                 trainee.getId(),
-                idList,
-                periodFrom.toString(),
-                periodTo.toString()
+                trainerName,
+                periodFrom,
+                periodTo
         );
     }
 
@@ -139,17 +134,17 @@ public class TraineeService {
         Trainee trainee = traineeDaoImp.findByUsername(username);
         List<Trainer> trainerList = trainerDaoImp.findAllByUsername(trainersUsernameList);
 
-//        for (Trainer trainer :
-//                trainerList) {
-//            trainer.removeTrainee(trainee);
-//        }
-//
-//        trainee.setTrainers(trainerList);
-//
-//        for (Trainer trainer :
-//                trainerList) {
-//            trainer.addTrainee(trainee);
-//        }
+        for (Trainer trainer :
+                trainerList) {
+            trainer.removeTrainee(trainee);
+        }
+
+        trainee.setTrainers(trainerList);
+
+        for (Trainer trainer :
+                trainerList) {
+            trainer.addTrainee(trainee);
+        }
         logger.info("Trainee:" + trainee);
 
         traineeDaoImp.updateTrainee(trainee);
