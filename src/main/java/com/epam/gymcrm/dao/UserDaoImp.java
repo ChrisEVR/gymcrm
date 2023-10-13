@@ -16,12 +16,15 @@ import org.springframework.stereotype.Repository;
 import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @Repository
 @Transactional
 public class UserDaoImp implements UserDao {
     @PersistenceContext
     EntityManager entityManager;
+
+    private static final Logger logger = Logger.getLogger(UserDaoImp.class.getName());
 
     @Override
     public List<User> findByFirstnameAndLastname(String firstname, String lastname){
@@ -45,5 +48,10 @@ public class UserDaoImp implements UserDao {
 
     public void createUser(User user){
         entityManager.persist(user);
+    }
+
+    public void updateUser(User user){
+
+        entityManager.merge(user);
     }
 }
