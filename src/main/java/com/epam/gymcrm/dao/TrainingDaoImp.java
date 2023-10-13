@@ -3,6 +3,7 @@ package com.epam.gymcrm.dao;
 import com.epam.gymcrm.models.Trainee;
 import com.epam.gymcrm.models.Trainer;
 import com.epam.gymcrm.models.Training;
+import com.epam.gymcrm.models.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
@@ -16,11 +17,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Repository
 @Transactional
 public class TrainingDaoImp implements TrainingDao {
-    private static final Logger logger = Logger.getLogger(TrainingTypeDaoImp.class.getName());
+    private static final Logger logger = Logger.getLogger(TrainingDaoImp.class.getName());
 
     @PersistenceContext
     EntityManager entityManager;
@@ -36,89 +38,39 @@ public class TrainingDaoImp implements TrainingDao {
         return training;
     }
 
-    //TODO: Reduce following two functions
-    public List<Training> getTrainingsByTrainerId(
-            Long idTrainer,
-            List<Long> listIdTrainee,
-            String periodFrom,
-            String periodTo
+    public List<Training> getTrainingsByUserId(
+            User user,
+            Long id,
+            String name,
+            Date periodFrom,
+            Date periodTo
     ) {
-        StringBuilder queryString = new StringBuilder("SELECT t FROM Training t");
-        Map<String, Object> params = new HashMap<>();
-        TypedQuery<Training> query;
+        String whereClause = user instanceof Trainer ? "WHERE t.trainer.id = :idUser " :
+                "WHERE t.trainee.id = :idUser ";
+        String concatenatedName = user instanceof Trainer ? "t.trainee.firstName, ' ', t.trainee.lastName" :
+                "t.trainer.firstName, ' ', t.trainer.lastName";
 
-        if(idTrainer != null || listIdTrainee != null || periodFrom != null || periodTo != null ){
-            queryString.append(" WHERE");
-        }
+        TypedQuery<Training> query = entityManager.createQuery(
+                "SELECT t " +
+                    "FROM Training t " +
+                    whereClause +
+                    "AND (:name is null OR CONCAT(" + concatenatedName + ") " +
+                    "LIKE :name) " +
+                    "AND (:periodFrom is null OR t.trainingDate >= :periodFrom) " +
+                    "AND (:periodTo is null OR t.trainingDate <= :periodTo)",
+                Training.class);
 
-        if(idTrainer != null){
-            queryString.append(" AND t.trainer_id = :idTrainer");
-            params.put("idTrainer", idTrainer);
-        }
+        query
+                .setParameter("idUser", id)
+                .setParameter("name", name == null ? null : "%" + name + "%")
+                .setParameter("periodFrom", periodFrom)
+                .setParameter("periodTo", periodTo);
 
-        if(listIdTrainee != null){
-            queryString.append(" AND t.trainee_id IN :listIdTrainee");
-            params.put("listIdTrainee", listIdTrainee);
-        }
-
-        if(periodFrom != null){
-            queryString.append(" AND :periodFrom <= t.training_date");
-            params.put("periodFrom", periodFrom);
-        }
-
-        if(periodTo != null){
-            queryString.append(" AND :periodTo >= t.training_date");
-            params.put("periodTo", periodTo);
-        }
-
-        query = entityManager.createQuery(queryString.toString(), Training.class);
-
-        for(Map.Entry<String, Object> entry : params.entrySet()){
-            query.setParameter(entry.getKey(), entry.getValue());
-        }
-
-        return query.getResultList();
-    }
-
-    public List<Training> getTrainingsByTraineeId(
-            Long listIdTrainer,
-            List<Long> listIdTrainee,
-            String periodFrom,
-            String periodTo
-    ) {
-        StringBuilder queryString = new StringBuilder("SELECT t FROM Training t");
-        Map<String, Object> params = new HashMap<>();
-        TypedQuery<Training> query;
-
-        if(listIdTrainer != null || listIdTrainee != null || periodFrom != null || periodTo != null ){
-            queryString.append(" WHERE");
-        }
-
-        if(listIdTrainer != null){
-            queryString.append(" AND t.trainer_id = :idTrainer");
-            params.put("idTrainer", listIdTrainer);
-        }
-
-        if(listIdTrainee != null){
-            queryString.append(" AND t.trainee_id IN :listIdTrainee");
-            params.put("listIdTrainee", listIdTrainee);
-        }
-
-        if(periodFrom != null){
-            queryString.append(" AND :periodFrom <= t.training_date");
-            params.put("periodFrom", periodFrom);
-        }
-
-        if(periodTo != null){
-            queryString.append(" AND :periodTo >= t.training_date");
-            params.put("periodTo", periodTo);
-        }
-
-        query = entityManager.createQuery(queryString.toString(), Training.class);
-
-        for(Map.Entry<String, Object> entry : params.entrySet()){
-            query.setParameter(entry.getKey(), entry.getValue());
-        }
+        logger.info("idTrainer:" + id +
+                " name:" + name +
+                " periodFrom:" + periodFrom +
+                " periodTo:" + periodTo
+        );
 
         return query.getResultList();
     }
