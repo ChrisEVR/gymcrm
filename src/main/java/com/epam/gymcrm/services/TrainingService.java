@@ -9,9 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.util.logging.Logger;
 
 @Service
 public class TrainingService {
+    private static final Logger logger = Logger.getLogger(TrainingService.class.getName());
+
     @Autowired
     private TrainingDaoImp trainingDaoImp;
 
@@ -37,12 +40,17 @@ public class TrainingService {
         Trainee trainee = traineeDaoImp.findByUsername(traineeUsername);
         TrainingType trainingType = trainingTypeDaoImp.findByName(trainingTypeName);
 
-        training.setTraining_name(trainingName);
+        training.setTrainingName(trainingName);
         training.setTrainingType(trainingType);
         training.setTrainee(trainee);
         training.setTrainer(trainer);
-        training.setTraining_date(trainingDate);
-        training.setTraining_duration(trainingDuration);
+        training.setTrainingDate(trainingDate);
+        training.setTrainingDuration(trainingDuration);
+
+        trainee.addTraining(training);
+        trainer.addTraining(training);
+
+        logger.info("training:---" + training.toString());
 
         trainingDaoImp.createTraining(training);
     }
