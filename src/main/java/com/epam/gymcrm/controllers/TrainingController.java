@@ -16,8 +16,8 @@ public class TrainingController {
     @Autowired
     private TrainingService trainingService;
 
-    @PostMapping("/register")
-    public ResponseEntity.BodyBuilder registerTraining(
+    @PostMapping("/add")
+    public ResponseEntity<String> addTraining(
             @RequestParam("traineeUsername") String traineeUsername,
             @RequestParam("trainerUsername") String trainerUsername,
             @RequestParam("trainingName") String trainingName,
@@ -35,6 +35,6 @@ public class TrainingController {
         );
 
         //orElseThrow(() -> new ResourceNotFoundException(username + " NOT found"));
-        return ResponseEntity.ok();
+        return ResponseEntity.ok("Training added successfully!");
     }
 }
