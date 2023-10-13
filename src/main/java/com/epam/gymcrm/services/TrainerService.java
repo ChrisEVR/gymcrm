@@ -18,14 +18,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service
 public class TrainerService {
+    private static final Logger logger = Logger.getLogger(TrainerService.class.getName());
     @Autowired
     TrainerDaoImp trainerDaoImp;
     @Autowired
@@ -74,6 +77,12 @@ public class TrainerService {
         return responseMap;
     }
 
+    public Trainer getTrainerProfile(String username){
+        Trainer trainer = trainerDaoImp.findByUsername(username);
+        logger.info("get trainer:" + trainer);
+        return trainer;
+    }
+
     public Trainer updateTrainer(
             String username,
             String firstName,
@@ -93,28 +102,20 @@ public class TrainerService {
     }
 
     public void activateDeactivateTrainer(String username, Boolean isActive){
-        Integer updatedRows = trainerDaoImp.activateDeactivateTrainer(username, isActive);
-
-        if(updatedRows == 0){
-            throw new EntityNotFoundException("Trainer not found with given username");
-        }
+        Trainer trainer = trainerDaoImp.findByUsername(username);
+        trainer.setActive(isActive);
+        trainerDaoImp.updateTrainer(trainer);
     }
 
     public List<Training> getTrainingList(String username, String traineeName, Date periodFrom, Date periodTo){
         Trainer trainer = trainerDaoImp.findByUsername(username);
-        List<Long> traineesId = traineeDaoImp.findAllTraineesId();
-        List<Trainee> traineeList = traineeDaoImp.findByIdsAndName(traineesId, traineeName);
-        List<Long> idList = traineeList.stream().map(Trainee::getId).toList();
 
-        return trainingDaoImp.getTrainingsByTrainerId(
+        return trainingDaoImp.getTrainingsByUserId(
+                trainer,
                 trainer.getId(),
-                idList,
-                periodFrom.toString(),
-                periodTo.toString()
+                traineeName,
+                periodFrom,
+                periodTo
         );
-    }
-
-    public Trainer loadUserByUsername(String username) throws UsernameNotFoundException {
-        return trainerDaoImp.loadByUsername(username);
     }
 }
