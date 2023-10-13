@@ -104,7 +104,7 @@ public class TrainerDaoImp implements TrainerDao {
                 "SELECT tt " +
                 "FROM Trainee t2 " +
                 "JOIN t2.trainers tt " +
-                "WHERE t2.username = :traineeUsername) AND" +
+                "WHERE t2.username = :traineeUsername) AND " +
                 "t1.isActive = true";
 
         TypedQuery<Trainer> query = entityManager.createQuery(queryString, Trainer.class);
