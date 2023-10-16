@@ -16,8 +16,8 @@ import java.util.logging.Logger;
 
 @Service
 public class TrainingService {
-(    private static final Logger logger = Logger.getLogger(TrainingService.class.getName());
-)
+    private static final Logger logger = Logger.getLogger(TrainingService.class.getName());
+
     @Autowired
     private JmsTemplate jmsTemplate;
 
