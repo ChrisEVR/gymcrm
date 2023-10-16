@@ -6,14 +6,20 @@ import com.epam.gymcrm.models.Trainer;
 import com.epam.gymcrm.models.Training;
 import com.epam.gymcrm.models.TrainingType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 @Service
 public class TrainingService {
-    private static final Logger logger = Logger.getLogger(TrainingService.class.getName());
+(    private static final Logger logger = Logger.getLogger(TrainingService.class.getName());
+)
+    @Autowired
+    private JmsTemplate jmsTemplate;
 
     @Autowired
     private TrainingDaoImp trainingDaoImp;
@@ -52,6 +58,26 @@ public class TrainingService {
 
         logger.info("training:---" + training.toString());
 
+        addTrainerWorkload(trainer, training);
+
         trainingDaoImp.createTraining(training);
+    }
+
+    private void addTrainerWorkload(
+            Trainer trainer,
+            Training training
+    ){
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("id", trainer.getId());
+        map.put("username", trainer.getUsername());
+        map.put("firstName", trainer.getFirstName());
+        map.put("lastName", trainer.getLastName());
+        map.put("isActive", trainer.getActive());
+        map.put("trainingDate", training.getTrainingDate().toString());
+        map.put("trainingDuration", training.getTrainingDuration());
+        map.put("add", true);
+
+        jmsTemplate.convertAndSend("reports", map);
     }
 }
