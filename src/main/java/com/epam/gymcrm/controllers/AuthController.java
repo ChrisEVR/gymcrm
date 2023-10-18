@@ -16,7 +16,7 @@ import java.sql.Date;
 import java.util.Map;
 import java.util.logging.Logger;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+//@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -33,20 +33,21 @@ public class AuthController {
     public ResponseEntity<String> authenticateUser(
             @RequestParam(value = "username") String username,
             @RequestParam(value = "password") String password
-    ){
-        logger.info(username + "- - -" + password);
-        Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(username, password));
-
+    ) {
         logger.info(username + "- - -" + password);
         String token;
 
-        if(authentication.isAuthenticated()){
+        try {
+            Authentication authentication = authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(username, password));
+
             token = jwtUtil.generateToken(username);
-        } else {
+            logger.info("token:" + token);
+            logger.info("authentication:" + authentication);
+        } catch (Exception e) {
+            logger.info("exception:" + e);
             throw new UsernameNotFoundException("Invalid user request!");
         }
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return ResponseEntity.ok(token);
     }
@@ -56,7 +57,7 @@ public class AuthController {
             @RequestParam(value = "username") String username,
             @RequestParam(value = "oldPassword") String oldPassword,
             @RequestParam(value = "newPassword") String newPassword
-    ){
+    ) {
 
         userService.updatePassword(username, oldPassword, newPassword);
         return ResponseEntity.ok("Successfully updated!");

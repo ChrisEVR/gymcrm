@@ -13,11 +13,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class TrainingTypeController {
-    @Autowired
-    TrainingTypeService trainingTypeService;
+    private final TrainingTypeService trainingTypeService;
+
+    public TrainingTypeController(TrainingTypeService trainingTypeService) {
+        this.trainingTypeService = trainingTypeService;
+    }
 
     @GetMapping("/training-type")
-    public ResponseEntity<List<TrainingType>> getTrainingType(){
+    public ResponseEntity<List<TrainingType>> getTrainingType() {
         List<TrainingType> responseTrainingTypes = trainingTypeService.getTrainingTypes();
         return ResponseEntity.ok(responseTrainingTypes);
     }

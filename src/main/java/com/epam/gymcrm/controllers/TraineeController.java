@@ -20,8 +20,11 @@ import java.util.logging.Logger;
 @RequestMapping("/api/trainee")
 public class TraineeController {
     private static final Logger logger = Logger.getLogger(TraineeController.class.getName());
-    @Autowired
-    private TraineeService traineeService;
+    private final TraineeService traineeService;
+
+    public TraineeController(TraineeService traineeService) {
+        this.traineeService = traineeService;
+    }
 
     @PostMapping("/register")
     public ResponseEntity<Map<String, String>> registerTrainee(
@@ -29,14 +32,14 @@ public class TraineeController {
             @RequestParam(value = "lastName") String lastName,
             @RequestParam(value = "dateOfBirth", required = false) Date dateOfBirth,
             @RequestParam(value = "address", required = false) String address
-    ){
+    ) {
         Map<String, String> response = traineeService.createTrainee(firstName, lastName, dateOfBirth, address);
         logger.info("response:" + response.toString());
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/not-assigned-trainers")
-    public ResponseEntity<List<Trainer>> getNotAssignedTrainers(@RequestParam(value = "username") String username){
+    public ResponseEntity<List<Trainer>> getNotAssignedTrainers(@RequestParam(value = "username") String username) {
         List<Trainer> response = traineeService.getNotAssignedTrainers(username);
         return ResponseEntity.ok(response);
     }
@@ -47,22 +50,26 @@ public class TraineeController {
             @RequestParam(value = "trainerName", required = false) String trainerName,
             @RequestParam(value = "periodFrom", required = false) Date periodFrom,
             @RequestParam(value = "periodTo", required = false) Date periodTo
-    ){
+    ) {
         return ResponseEntity.ok(traineeService.getTrainingList(username, trainerName, periodFrom, periodTo));
     }
+
     @GetMapping("/{username}")
-    public ResponseEntity<Trainee> getTraineeProfile(@PathVariable String username){
+    public ResponseEntity<Trainee> getTraineeProfile(@PathVariable String username) {
         return ResponseEntity.ok(traineeService.getTraineeProfile(username));
     }
+
     @GetMapping("/all")
-    public ResponseEntity<List<Trainee>> getAllTraineeProfile(){
+    public ResponseEntity<List<Trainee>> getAllTraineeProfile() {
         return ResponseEntity.ok(traineeService.getTraineesProfile());
     }
+
     @DeleteMapping("/{username}")
-    public ResponseEntity<String> deleteTrainee(@PathVariable String username){
+    public ResponseEntity<String> deleteTrainee(@PathVariable String username) {
         traineeService.deleteTrainee(username);
         return ResponseEntity.ok("Trainee deleted successfully.");
     }
+
     @PutMapping("/update")
     public ResponseEntity<Trainee> updateTrainee(
             @RequestParam(value = "username") String username,
@@ -71,7 +78,7 @@ public class TraineeController {
             @RequestParam(value = "dateOfBirth", required = false) Date dateOfBirth,
             @RequestParam(value = "address", required = false) String address,
             @RequestParam(value = "isActive") Boolean isActive
-    ){
+    ) {
         return ResponseEntity.ok(
                 traineeService.updateTrainee(username, firstName, lastName, dateOfBirth, address, isActive)
         );
@@ -90,7 +97,7 @@ public class TraineeController {
     public ResponseEntity<List<Trainer>> updateTrainerList(
             @RequestParam("username") String username,
             @RequestParam("trainersList") List<String> trainersList
-    ){
+    ) {
         return ResponseEntity.ok(
                 traineeService.updateTrainerList(username, trainersList)
         );

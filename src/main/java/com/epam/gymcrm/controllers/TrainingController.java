@@ -13,8 +13,11 @@ import java.sql.Date;
 @RestController
 @RequestMapping("/api/training")
 public class TrainingController {
-    @Autowired
-    private TrainingService trainingService;
+    private final TrainingService trainingService;
+
+    public TrainingController(TrainingService trainingService) {
+        this.trainingService = trainingService;
+    }
 
     @PostMapping("/add")
     public ResponseEntity<String> addTraining(
@@ -24,7 +27,7 @@ public class TrainingController {
             @RequestParam("trainingDate") Date trainingDate,
             @RequestParam("trainingDuration") Long trainingDuration,
             @RequestParam("trainingType") String trainingTypeName
-    ){
+    ) {
         trainingService.createTraining(
                 traineeUsername,
                 trainerUsername,
