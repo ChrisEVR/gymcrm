@@ -1,21 +1,12 @@
 package com.epam.gymcrm.filter;
 
-import com.epam.gymcrm.config.AuthEntryPointJwt;
-import com.epam.gymcrm.dao.UserDaoImp;
-import com.epam.gymcrm.models.User;
-import com.epam.gymcrm.services.TraineeService;
-import com.epam.gymcrm.services.UserService;
 import com.epam.gymcrm.utils.JWTUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -30,11 +21,11 @@ import java.util.logging.Logger;
 public class JwtAuthFilter extends OncePerRequestFilter {
     private static final Logger logger = Logger.getLogger(JwtAuthFilter.class.getName());
 
-    @Autowired
-    private JWTUtil jwtUtil;
+    private final JWTUtil jwtUtil;
 
-    @Autowired
-    private UserService userService;
+    public JwtAuthFilter(JWTUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
 
     @Override
     protected void doFilterInternal(
@@ -48,17 +39,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String username = null;
         logger.info("authHeader--:" + authHeader);
 
-        if(authHeader != null && authHeader.startsWith("Bearer ")){
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
             username = jwtUtil.extractUsername(token);
         }
 
-        if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            UserDetails userDetails = userService.loadUserByUsername(username);
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            if(jwtUtil.validateToken(token, userDetails)){
+            if(jwtUtil.validateToken(token)){
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails.getUsername(),
+mt                         username,
                         null,
                         new LinkedList<>()
                 );
