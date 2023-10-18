@@ -25,7 +25,7 @@ public class ActiveMQConfig {
     }
 
     @Bean
-    public ActiveMQConnectionFactory activeMQConnectionFactory(){
+    public ActiveMQConnectionFactory activeMQConnectionFactory() {
         ActiveMQConnectionFactory activeMQConnectionFactory = new ActiveMQConnectionFactory();
         activeMQConnectionFactory.setBrokerURL(brokerUrl);
         activeMQConnectionFactory.setUserName(brokerUsername);
@@ -34,7 +34,7 @@ public class ActiveMQConfig {
     }
 
     @Bean
-    public JmsTemplate jmsTemplate(){
+    public JmsTemplate jmsTemplate() {
         return new JmsTemplate(activeMQConnectionFactory());
     }
 }
