@@ -1,10 +1,7 @@
 package com.epam.gymcrm.services;
 
 import com.epam.gymcrm.dao.*;
-import com.epam.gymcrm.models.Trainee;
-import com.epam.gymcrm.models.Trainer;
-import com.epam.gymcrm.models.Training;
-import com.epam.gymcrm.models.TrainingType;
+import com.epam.gymcrm.models.*;
 import com.epam.gymcrm.utils.PasswordUtil;
 import com.epam.gymcrm.utils.UsernameUtil;
 import jakarta.persistence.EntityNotFoundException;
@@ -29,33 +26,47 @@ import java.util.stream.Collectors;
 @Service
 public class TrainerService {
     private static final Logger logger = Logger.getLogger(TrainerService.class.getName());
-    @Autowired
-    TrainerDaoImp trainerDaoImp;
-    @Autowired
-    TraineeDaoImp traineeDaoImp;
-    @Autowired
-    TrainingDaoImp trainingDaoImp;
-    @Autowired
-    TrainingTypeDaoImp trainingTypeDaoImp;
-    @Autowired
-    PasswordUtil passwordUtil;
-    @Autowired
-    UsernameUtil usernameUtil;
+    private final UserRepository userRepository;
+    private final TrainerRepository trainerRepository;
+    private final TrainingRepository trainingRepository;
+    private final TrainingTypeRepository trainingTypeRepository;
+    private final PasswordUtil passwordUtil;
+    private final UsernameUtil usernameUtil;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
+    public TrainerService(
+            UserRepository userRepository,
+            TrainerRepository trainerRepository,
+            TrainingRepository trainingRepository,
+            TrainingTypeRepository trainingTypeRepository,
+            PasswordUtil passwordUtil,
+            UsernameUtil usernameUtil,
+            PasswordEncoder passwordEncoder
+    ) {
+        this.userRepository = userRepository;
+        this.trainerRepository = trainerRepository;
+        this.trainingRepository = trainingRepository;
+        this.trainingTypeRepository = trainingTypeRepository;
+        this.passwordUtil = passwordUtil;
+        this.usernameUtil = usernameUtil;
+        this.passwordEncoder = passwordEncoder;
+    }
+
 
     public Map<String, String> createTrainer(
             String firstName,
             String lastName,
             Long specialization
-    ){
+    ) {
         Trainer registeredTrainer;
         Trainer trainer = new Trainer();
-        TrainingType trainingType = trainingTypeDaoImp.getTrainingTypeById(specialization);
+        TrainingType trainingType = trainingTypeRepository
+                .findById(specialization)
+                .orElseThrow(() -> new EntityNotFoundException("Training type not found with ID:" + specialization));
+
         Map<String, String> responseMap = new HashMap<>();
 
-        List<Trainer> trainers = trainerDaoImp.findByFirstnameAndLastname(
+        List<User> trainers = userRepository.findByFirstNameAndLastName(
                 firstName,
                 lastName
         );
@@ -69,7 +80,7 @@ public class TrainerService {
         trainer.setActive(true);
         trainer.setTrainingType(trainingType);
 
-        registeredTrainer = trainerDaoImp.createTrainer(trainer);
+        registeredTrainer = trainerRepository.save(trainer);
 
         responseMap.put("username", registeredTrainer.getUsername());
         responseMap.put("password", password);
@@ -77,8 +88,8 @@ public class TrainerService {
         return responseMap;
     }
 
-    public Trainer getTrainerProfile(String username){
-        Trainer trainer = trainerDaoImp.findByUsername(username);
+    public Trainer getTrainerProfile(String username) {
+        Trainer trainer = trainerRepository.findByUsername(username);
         logger.info("get trainer:" + trainer);
         return trainer;
     }
@@ -89,29 +100,30 @@ public class TrainerService {
             String lastName,
             Long specialization,
             Boolean isActive
-    ){
-        Trainer trainer = trainerDaoImp.findByUsername(username);
-        TrainingType trainingType = trainingTypeDaoImp.getTrainingTypeById(specialization);
+    ) {
+        Trainer trainer = trainerRepository.findByUsername(username);
+        TrainingType trainingType = trainingTypeRepository
+                .findById(specialization)
+                .orElseThrow(() -> new EntityNotFoundException("Training type not found with ID:" + specialization));
 
         trainer.setFirstName(firstName);
         trainer.setLastName(lastName);
         trainer.setTrainingType(trainingType);
         trainer.setActive(isActive);
 
-        return trainerDaoImp.updateTrainer(trainer);
+        return trainerRepository.save(trainer);
     }
 
-    public void activateDeactivateTrainer(String username, Boolean isActive){
-        Trainer trainer = trainerDaoImp.findByUsername(username);
+    public void activateDeactivateTrainer(String username, Boolean isActive) {
+        Trainer trainer = trainerRepository.findByUsername(username);
         trainer.setActive(isActive);
-        trainerDaoImp.updateTrainer(trainer);
+        trainerRepository.save(trainer);
     }
 
-    public List<Training> getTrainingList(String username, String traineeName, Date periodFrom, Date periodTo){
-        Trainer trainer = trainerDaoImp.findByUsername(username);
+    public List<Training> getTrainingList(String username, String traineeName, Date periodFrom, Date periodTo) {
+        Trainer trainer = trainerRepository.findByUsername(username);
 
-        return trainingDaoImp.getTrainingsByUserId(
-                trainer,
+        return trainingRepository.findByTrainingDateBetweenAndTrainerIdAndTrainingName(
                 trainer.getId(),
                 traineeName,
                 periodFrom,

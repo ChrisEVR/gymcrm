@@ -1,57 +1,40 @@
 package com.epam.gymcrm.services;
 
-import com.epam.gymcrm.dao.TraineeDaoImp;
-import com.epam.gymcrm.dao.UserDaoImp;
+import com.epam.gymcrm.dao.UserRepository;
 import com.epam.gymcrm.models.User;
 import com.epam.gymcrm.utils.PasswordUtil;
-import com.epam.gymcrm.utils.UsernameUtil;
-import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
 
 @Service
-public class UserService implements UserDetailsService{
-    @Autowired
-    UserDaoImp userDaoImp;
-    @Autowired
-    private PasswordUtil passwordUtil;
+public class UserService implements UserDetailsService {
+    private final UserRepository userRepository;
+    private final PasswordUtil passwordUtil;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    public void createUser(
-            String firstname,
-            String lastname
-    ){
-        User user = new User();
-
-        user.setFirstName(firstname);
-        user.setLastName(lastname);
-        user.setUsername("username");
-        user.setPassword(passwordEncoder.encode(passwordUtil.generatePassword()));
-        user.setActive(true);
-        userDaoImp.createUser(user);
+    public UserService(UserRepository userRepository,
+                       PasswordUtil passwordUtil
+    ) {
+        this.userRepository = userRepository;
+        this.passwordUtil = passwordUtil;
     }
 
-    public void updatePassword(String username, String oldPassword, String newPassword){
-        User user = userDaoImp.loadByUsername(username);
+    public void updatePassword(String username, String oldPassword, String newPassword) {
+        User user = userRepository.findByUsername(username);
 
-        if(passwordEncoder.matches(oldPassword, user.getPassword())){
-            user.setPassword(passwordEncoder.encode(newPassword));
-            userDaoImp.updateUser(user);
+        if (new BCryptPasswordEncoder().matches(oldPassword, user.getPassword())) {
+            user.setPassword(new BCryptPasswordEncoder().encode(newPassword));
+            userRepository.save(user);
 
-        }else{
+        } else {
             throw new UsernameNotFoundException("Username not found");
         }
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userDaoImp.loadByUsername(username);
+        return userRepository.findByUsername(username);
     }
 }

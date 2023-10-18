@@ -22,28 +22,37 @@ import java.util.logging.Logger;
 @Service
 public class TraineeService {
     private static final Logger logger = Logger.getLogger(TraineeService.class.getName());
-    @Autowired
-    private TraineeDaoImp traineeDaoImp;
-    @Autowired
-    private TrainingDaoImp trainingDaoImp;
-    @Autowired
-    private TrainerDaoImp trainerDaoImp;
-    @Autowired
-    private PasswordUtil passwordUtil;
-    @Autowired
-    private UsernameUtil usernameUtil;
-    @Autowired
-    PasswordEncoder passwordEncoder;
+    private final TraineeRepository traineeRepository;
+    private final TrainingRepository trainingRepository;
+    private final TrainerRepository trainerRepository;
+    private final PasswordUtil passwordUtil;
+    private final UsernameUtil usernameUtil;
+    private final PasswordEncoder passwordEncoder;
 
+    public TraineeService(
+            TraineeRepository traineeRepository,
+            TrainingRepository trainingRepository,
+            TrainerRepository trainerRepository,
+            PasswordUtil passwordUtil,
+            UsernameUtil usernameUtil,
+            PasswordEncoder passwordEncoder
+    ) {
+        this.traineeRepository = traineeRepository;
+        this.trainingRepository = trainingRepository;
+        this.trainerRepository = trainerRepository;
+        this.passwordUtil = passwordUtil;
+        this.usernameUtil = usernameUtil;
+        this.passwordEncoder = passwordEncoder;
+    }
 
-    public Trainee getTraineeProfile(String username){
-        Trainee trainee = traineeDaoImp.findByUsername(username);
+    public Trainee getTraineeProfile(String username) {
+        Trainee trainee = traineeRepository.findByUsername(username);
         logger.info("get trainee:" + trainee);
         return trainee;
     }
 
-    public List<Trainee> getTraineesProfile(){
-        return traineeDaoImp.findAllTrainees();
+    public List<Trainee> getTraineesProfile() {
+        return traineeRepository.findAll();
     }
 
     public Map<String, String> createTrainee(
@@ -51,11 +60,11 @@ public class TraineeService {
             String lastName,
             Date dateOfBirth,
             String address
-    ){
+    ) {
         Trainee registeredTrainee;
         Trainee trainee = new Trainee();
         Map<String, String> responseMap = new HashMap<>();
-        List<Trainee> trainees = traineeDaoImp.findByFirstnameAndLastname(
+        List<Trainee> trainees = traineeRepository.findByFirstNameAndLastName(
                 firstName,
                 lastName
         );
@@ -69,7 +78,7 @@ public class TraineeService {
         trainee.setAddress(address);
         trainee.setActive(true);
 
-        registeredTrainee = traineeDaoImp.createTrainee(trainee);
+        registeredTrainee = traineeRepository.save(trainee);
 
         logger.info("registeredTrainee:" + registeredTrainee.toString());
 
@@ -88,8 +97,8 @@ public class TraineeService {
             Date dateOfBirth,
             String address,
             Boolean isActive
-    ){
-        Trainee trainee = traineeDaoImp.findByUsername(username);
+    ) {
+        Trainee trainee = traineeRepository.findByUsername(username);
 
         trainee.setFirstName(firstName);
         trainee.setLastName(lastName);
@@ -97,28 +106,23 @@ public class TraineeService {
         trainee.setAddress(address);
         trainee.setActive(isActive);
 
-        return traineeDaoImp.updateTrainee(trainee);
+        return traineeRepository.save(trainee);
     }
 
-    public void deleteTrainee(String username){
-        Integer deletedRows = traineeDaoImp.deleteTraineeByUsername(username);
-
-        if(deletedRows == 0){
-            throw new EntityNotFoundException("Trainee not found with given username");
-        }
+    public void deleteTrainee(String username) {
+        traineeRepository.deleteByUsername(username);
     }
 
-    public void activateDeactivateTrainee(String username, Boolean isActive){
-        Trainee trainee = traineeDaoImp.findByUsername(username);
+    public void activateDeactivateTrainee(String username, Boolean isActive) {
+        Trainee trainee = traineeRepository.findByUsername(username);
         trainee.setActive(isActive);
-        traineeDaoImp.updateTrainee(trainee);
+        traineeRepository.save(trainee);
     }
 
-    public List<Training> getTrainingList(String username, String trainerName, Date periodFrom, Date periodTo){
-        Trainee trainee = traineeDaoImp.findByUsername(username);
+    public List<Training> getTrainingList(String username, String trainerName, Date periodFrom, Date periodTo) {
+        Trainee trainee = traineeRepository.findByUsername(username);
 
-        return trainingDaoImp.getTrainingsByUserId(
-                trainee,
+        return trainingRepository.findByTrainingDateBetweenAndTraineeIdAndTrainingName(
                 trainee.getId(),
                 trainerName,
                 periodFrom,
@@ -126,13 +130,13 @@ public class TraineeService {
         );
     }
 
-    public List<Trainer> getNotAssignedTrainers(String username){
-        return trainerDaoImp.getNotAssignedTrainers(username);
+    public List<Trainer> getNotAssignedTrainers(String username) {
+        return trainerRepository.findNotAssignedTrainers(username);
     }
 
-    public List<Trainer> updateTrainerList(String username, List<String> trainersUsernameList){
-        Trainee trainee = traineeDaoImp.findByUsername(username);
-        List<Trainer> trainerList = trainerDaoImp.findAllByUsername(trainersUsernameList);
+    public List<Trainer> updateTrainerList(String username, List<String> trainersUsernameList) {
+        Trainee trainee = traineeRepository.findByUsername(username);
+        List<Trainer> trainerList = trainerRepository.findByUsernamesInList(trainersUsernameList);
 
         for (Trainer trainer :
                 trainerList) {
@@ -147,12 +151,8 @@ public class TraineeService {
         }
         logger.info("Trainee:" + trainee);
 
-        traineeDaoImp.updateTrainee(trainee);
+        traineeRepository.save(trainee);
 
         return trainerList;
-    }
-
-    public Trainee loadUserByUsername(String username) throws UsernameNotFoundException {
-        return traineeDaoImp.loadByUsername(username);
     }
 }
