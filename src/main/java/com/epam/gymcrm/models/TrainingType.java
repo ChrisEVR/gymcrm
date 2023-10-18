@@ -10,14 +10,6 @@ public class TrainingType {
     @Column(name = "id")
     private Long id;
 
-    @Override
-    public String toString() {
-        return "TrainingType{" +
-                "id=" + id +
-                ", trainingTypeName='" + trainingTypeName + '\'' +
-                '}';
-    }
-
     @Column(name = "training_type_name")
     private String trainingTypeName;
 
@@ -35,5 +27,13 @@ public class TrainingType {
 
     public void setTrainingTypeName(String trainingTypeName) {
         this.trainingTypeName = trainingTypeName;
+    }
+
+    @Override
+    public String toString() {
+        return "TrainingType{" +
+                "id=" + id +
+                ", trainingTypeName='" + trainingTypeName + '\'' +
+                '}';
     }
 }

@@ -6,12 +6,12 @@ import java.util.List;
 
 @Component
 public class UsernameUtil {
-    public <T> String generateUsername(String firstName, String lastName, List<T> listUser){
+    public <T> String generateUsername(String firstName, String lastName, List<T> listUser) {
         StringBuilder username;
 
         username = new StringBuilder(firstName + "." + lastName);
 
-        if(!listUser.isEmpty()){
+        if (!listUser.isEmpty()) {
             username.append(listUser.size());
         }
 

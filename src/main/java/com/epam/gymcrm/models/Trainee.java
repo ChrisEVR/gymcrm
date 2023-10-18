@@ -1,4 +1,5 @@
 package com.epam.gymcrm.models;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Cascade;
@@ -59,31 +60,36 @@ public class Trainee extends User {
     public Long getId() {
         return id;
     }
+
     public void setId(Long id) {
         this.id = id;
     }
+
     public Date getDateOfBirth() {
         return dateOfBirth;
     }
+
     public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
+
     public String getAddress() {
         return address;
     }
+
     public void setAddress(String address) {
         this.address = address;
     }
 
-    public void addTrainer(Trainer trainer){
-        if(this.trainers == null){
+    public void addTrainer(Trainer trainer) {
+        if (this.trainers == null) {
             this.trainers = new LinkedList<>();
         }
         this.trainers.add(trainer);
     }
 
-    public void addTraining(Training training){
-        if(this.trainings == null){
+    public void addTraining(Training training) {
+        if (this.trainings == null) {
             this.trainings = new LinkedList<>();
         }
 

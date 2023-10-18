@@ -7,12 +7,13 @@ import java.security.SecureRandom;
 @Component
 public class PasswordUtil {
     private static final int STRING_LENGTH = 10;
-    public String generatePassword(){
+
+    public String generatePassword() {
         SecureRandom random = new SecureRandom();
         StringBuilder password = new StringBuilder();
 
-        for(int i = 0; i < STRING_LENGTH; ++i){
-            int randomChar = random.nextInt(95) + 33;
+        for (int i = 0; i < STRING_LENGTH; ++i) {
+            int randomChar = random.nextInt(42) + 48;
             password.append((char) randomChar);
         }
 

@@ -73,21 +73,22 @@ public class Trainer extends User {
         this.trainees = trainees;
     }
 
-    public void addTrainee(Trainee trainee){
-        if(this.trainees == null){
+    public void addTrainee(Trainee trainee) {
+        if (this.trainees == null) {
             this.trainees = new LinkedList<>();
         }
         trainees.add(trainee);
     }
 
-    public void addTraining(Training training){
-        if(this.trainings == null){
+    public void addTraining(Training training) {
+        if (this.trainings == null) {
             this.trainings = new LinkedList<>();
         }
 
         trainings.add(training);
     }
-    public void removeTrainee(Trainee trainee){
+
+    public void removeTrainee(Trainee trainee) {
         trainees.remove(trainee);
     }
 
