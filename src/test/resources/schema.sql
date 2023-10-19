@@ -40,14 +40,14 @@ CREATE TABLE `training_type` (
 
 --DROP TABLE IF EXISTS `trainer`;
 
---CREATE TABLE `trainer` (
---  `id` int NOT NULL AUTO_INCREMENT,
---  `specialization` int,
---  `user_id` int,
---  PRIMARY KEY (`id`),
---  FOREIGN KEY (`specialization`) REFERENCES `training_type` (`id`),
---  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
---);
+CREATE TABLE `trainer` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `specialization` int,
+  `user_id` int,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`specialization`) REFERENCES `training_type` (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+);
 
 --/*Table structure for table `trainee_trainer` */
 --

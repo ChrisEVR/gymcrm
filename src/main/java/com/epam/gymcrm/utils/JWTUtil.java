@@ -1,14 +1,11 @@
 package com.epam.gymcrm.utils;
 
-import com.epam.gymcrm.config.AuthEntryPointJwt;
-import com.epam.gymcrm.models.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
@@ -21,10 +18,8 @@ import java.util.logging.Logger;
 
 @Component
 public class JWTUtil implements Serializable {
-    private static final Logger logger = Logger.getLogger(JWTUtil.class.getName());
-
     public static final Integer JWT_TOKEN_VALIDITY = 5 * 60 * 60;
-
+    private static final Logger logger = Logger.getLogger(JWTUtil.class.getName());
     @Value("${app.jwt.secret}")
     private String secret;
 

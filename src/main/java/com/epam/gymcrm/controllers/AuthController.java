@@ -1,6 +1,5 @@
 package com.epam.gymcrm.controllers;
 
-import com.epam.gymcrm.config.AuthEntryPointJwt;
 import com.epam.gymcrm.services.UserService;
 import com.epam.gymcrm.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,26 +7,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
-import java.util.Map;
 import java.util.logging.Logger;
 
 //@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+    private static final Logger logger = Logger.getLogger(AuthController.class.getName());
     @Autowired
     private JWTUtil jwtUtil;
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
     private UserService userService;
-
-    private static final Logger logger = Logger.getLogger(AuthController.class.getName());
 
     @GetMapping("/login")
     public ResponseEntity<String> authenticateUser(

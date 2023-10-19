@@ -3,12 +3,9 @@ package com.epam.gymcrm.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import org.hibernate.annotations.OnDelete;
-import org.springframework.boot.actuate.endpoint.web.Link;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 
 @Entity
 @Table(name = "trainer")

@@ -11,6 +11,8 @@ import java.util.List;
 @Transactional
 public interface TraineeRepository extends JpaRepository<Trainee, Long> {
     Trainee findByUsername(String username);
+
     List<Trainee> findByFirstNameAndLastName(String firstName, String lastName);
+
     void deleteByUsername(String username);
 }

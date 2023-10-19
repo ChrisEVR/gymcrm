@@ -1,27 +1,24 @@
 package com.epam.gymcrm.services;
 
-import com.epam.gymcrm.dao.*;
-import com.epam.gymcrm.models.*;
+import com.epam.gymcrm.dao.TrainerRepository;
+import com.epam.gymcrm.dao.TrainingRepository;
+import com.epam.gymcrm.dao.TrainingTypeRepository;
+import com.epam.gymcrm.dao.UserRepository;
+import com.epam.gymcrm.models.Trainer;
+import com.epam.gymcrm.models.Training;
+import com.epam.gymcrm.models.TrainingType;
+import com.epam.gymcrm.models.User;
 import com.epam.gymcrm.utils.PasswordUtil;
 import com.epam.gymcrm.utils.UsernameUtil;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.NoResultException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 @Service
 public class TrainerService {

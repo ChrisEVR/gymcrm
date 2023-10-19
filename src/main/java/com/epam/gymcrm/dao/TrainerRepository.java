@@ -13,6 +13,7 @@ import java.util.List;
 @Transactional
 public interface TrainerRepository extends JpaRepository<Trainer, Long> {
     Trainer findByUsername(String username);
+
     @Query("SELECT t FROM Trainer t WHERE t.username IN :usernames")
     List<Trainer> findByUsernamesInList(@Param("usernames") List<String> usernames);
 

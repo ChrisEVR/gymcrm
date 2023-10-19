@@ -11,8 +11,6 @@ import java.util.Map;
 
 @Service
 public class ReportService {
-    @Value("${gymcrm.queue-name}")
-    private String queueName;
     private final JmsTemplate jmsTemplate;
     private final String MESSAGE_KEY_ID = "id";
     private final String MESSAGE_KEY_USERNAME = "username";
@@ -22,6 +20,8 @@ public class ReportService {
     private final String MESSAGE_KEY_TRAINING_DURATION = "trainingDate";
     private final String MESSAGE_KEY_TRAINING_DATE = "trainingDuration";
     private final String MESSAGE_KEY_ADD = "add";
+    @Value("${gymcrm.queue-name}")
+    private String queueName;
 
     public ReportService(JmsTemplate jmsTemplate) {
         this.jmsTemplate = jmsTemplate;

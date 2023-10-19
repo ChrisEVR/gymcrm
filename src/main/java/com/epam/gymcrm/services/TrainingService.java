@@ -1,18 +1,16 @@
 package com.epam.gymcrm.services;
 
-import com.epam.gymcrm.dao.*;
+import com.epam.gymcrm.dao.TraineeRepository;
+import com.epam.gymcrm.dao.TrainerRepository;
+import com.epam.gymcrm.dao.TrainingRepository;
+import com.epam.gymcrm.dao.TrainingTypeRepository;
 import com.epam.gymcrm.models.Trainee;
 import com.epam.gymcrm.models.Trainer;
 import com.epam.gymcrm.models.Training;
 import com.epam.gymcrm.models.TrainingType;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jms.core.JmsTemplate;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Logger;
 
 @Service
@@ -60,7 +58,7 @@ public class TrainingService {
         trainee.addTraining(training);
         trainer.addTraining(training);
 
-        logger.info("training:---" + training.toString());
+        logger.info("training:---" + training);
 
         reportService.addTrainerWorkload(trainer, training);
 

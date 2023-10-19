@@ -1,21 +1,21 @@
 package com.epam.gymcrm.services;
 
-import com.epam.gymcrm.dao.*;
-import com.epam.gymcrm.models.*;
+import com.epam.gymcrm.dao.TraineeRepository;
+import com.epam.gymcrm.dao.TrainerRepository;
+import com.epam.gymcrm.dao.TrainingRepository;
+import com.epam.gymcrm.models.Trainee;
+import com.epam.gymcrm.models.Trainer;
+import com.epam.gymcrm.models.Training;
 import com.epam.gymcrm.utils.PasswordUtil;
 import com.epam.gymcrm.utils.UsernameUtil;
-import jakarta.persistence.EntityNotFoundException;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
-import java.util.*;
 import java.sql.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -80,7 +80,7 @@ public class TraineeService {
 
         registeredTrainee = traineeRepository.save(trainee);
 
-        logger.info("registeredTrainee:" + registeredTrainee.toString());
+        logger.info("registeredTrainee:" + registeredTrainee);
 
         responseMap.put("username", trainee.getUsername());
         responseMap.put("password", password);

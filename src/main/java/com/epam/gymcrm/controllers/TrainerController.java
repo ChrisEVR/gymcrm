@@ -2,14 +2,11 @@ package com.epam.gymcrm.controllers;
 
 import com.epam.gymcrm.models.Trainer;
 import com.epam.gymcrm.models.Training;
-import com.epam.gymcrm.services.TraineeService;
 import com.epam.gymcrm.services.TrainerService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

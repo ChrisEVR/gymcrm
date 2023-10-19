@@ -4,16 +4,12 @@ import com.epam.gymcrm.models.Trainee;
 import com.epam.gymcrm.models.Trainer;
 import com.epam.gymcrm.models.Training;
 import com.epam.gymcrm.services.TraineeService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.logging.Logger;
 
 @RestController
