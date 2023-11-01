@@ -1,5 +1,6 @@
 package com.epam.gymcrm.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
@@ -31,6 +32,7 @@ public class Training {
             referencedColumnName = "id",
             nullable = false
     )
+    @JsonIgnore
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Trainee trainee;
 
@@ -43,6 +45,7 @@ public class Training {
             referencedColumnName = "id",
             nullable = false
     )
+    @JsonIgnore
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Trainer trainer;
 

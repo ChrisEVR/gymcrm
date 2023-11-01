@@ -17,8 +17,8 @@ public class ReportService {
     private final String MESSAGE_KEY_FIRST_NAME = "firstName";
     private final String MESSAGE_KEY_LAST_NAME = "lastName";
     private final String MESSAGE_KEY_IS_ACTIVE = "isActive";
-    private final String MESSAGE_KEY_TRAINING_DURATION = "trainingDate";
-    private final String MESSAGE_KEY_TRAINING_DATE = "trainingDuration";
+    private final String MESSAGE_KEY_TRAINING_DATE = "trainingDate";
+    private final String MESSAGE_KEY_TRAINING_DURATION = "trainingDuration";
     private final String MESSAGE_KEY_ADD = "add";
     @Value("${gymcrm.queue-name}")
     private String queueName;
