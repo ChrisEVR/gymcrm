@@ -16,6 +16,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import java.util.logging.Logger;
 
@@ -31,19 +33,20 @@ public class SecurityConfig {
         this.jwtAuthFilter = jwtAuthFilter;
         this.userService = userService;
     }
-
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity)
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, HandlerMappingIntrospector introspector)
             throws Exception {
+        MvcRequestMatcher.Builder mvcMatcherBuilder = new MvcRequestMatcher.Builder(introspector);
+
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize ->
                         authorize
-                                .requestMatchers("/api/trainer/register").permitAll()
-                                .requestMatchers("/api/trainee/register").permitAll()
-                                .requestMatchers("/api/auth/**").permitAll()
-                                .requestMatchers("/actuator/**").permitAll()
+                                .requestMatchers(mvcMatcherBuilder.pattern("/api/trainer/register")).permitAll()
+                                .requestMatchers(mvcMatcherBuilder.pattern("/api/trainee/register")).permitAll()
+                                .requestMatchers(mvcMatcherBuilder.pattern("/api/auth/**")).permitAll()
+                                .requestMatchers(mvcMatcherBuilder.pattern("/actuator/**")).permitAll()
                                 .anyRequest().authenticated()
                 );
 
