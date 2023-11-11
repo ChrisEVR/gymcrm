@@ -20,8 +20,8 @@ public class ReportService {
     private final String MESSAGE_KEY_TRAINING_DATE = "trainingDate";
     private final String MESSAGE_KEY_TRAINING_DURATION = "trainingDuration";
     private final String MESSAGE_KEY_ADD = "add";
-    @Value("${gymcrm.queue-name}")
-    private String queueName;
+//    @Value("${gymcrm.queue-name}")
+//    private String queueName;
 
     public ReportService(JmsTemplate jmsTemplate) {
         this.jmsTemplate = jmsTemplate;
@@ -39,6 +39,6 @@ public class ReportService {
         messageKeyValues.put(MESSAGE_KEY_TRAINING_DURATION, training.getTrainingDuration());
         messageKeyValues.put(MESSAGE_KEY_ADD, true);
 
-        jmsTemplate.convertAndSend(queueName, messageKeyValues);
+//        jmsTemplate.convertAndSend(queueName, messageKeyValues);
     }
 }

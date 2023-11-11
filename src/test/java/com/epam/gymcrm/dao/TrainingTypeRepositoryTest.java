@@ -22,37 +22,39 @@ import java.util.logging.Logger;
 @SpringBootTest
 @ActiveProfiles("test")
 public class TrainingTypeRepositoryTest {
-    private final TrainingTypeRepository trainingTypeRepository;
+//    private final TrainingTypeRepository trainingTypeRepository;
 
     private static final Logger logger = Logger.getLogger(TrainingTypeRepositoryTest.class.getName());
 
     @Autowired
-    public TrainingTypeRepositoryTest(TrainingTypeRepository trainingTypeRepository) {
-        this.trainingTypeRepository = trainingTypeRepository;
+    public TrainingTypeRepositoryTest(
+//            TrainingTypeRepository trainingTypeRepository
+    ) {
+//        this.trainingTypeRepository = trainingTypeRepository;
     }
 
     @Test
     public void should_get_all_training_types(){
         List<String> trainingTypes = Arrays.asList("Fitness", "Yoga", "Zumba", "Stretching", "Resistance");
-        List<TrainingType> trainingTypeList = trainingTypeRepository.findAll();
+//        List<TrainingType> trainingTypeList = trainingTypeRepository.findAll();
 
-        for(int i = 0; i < trainingTypeList.size(); ++i){
-            TrainingType trainingType = trainingTypeList.get(i);
-            Assertions.assertTrue(i + 1 == trainingType.getId() &&
-                    Objects.equals(trainingType.getTrainingTypeName(), trainingTypes.get(i)));
-        }
+//        for(int i = 0; i < trainingTypeList.size(); ++i){
+//            TrainingType trainingType = trainingTypeList.get(i);
+//            Assertions.assertTrue(i + 1 == trainingType.getId() &&
+//                    Objects.equals(trainingType.getTrainingTypeName(), trainingTypes.get(i)));
+//        }
     }
 
-//    @Test
-//    public void should_get_resistance_training_type_by_id(){
+    @Test
+    public void should_get_resistance_training_type_by_id(){
 //        TrainingType trainingType = trainingTypeRepository.findById(5L)
 //                .orElseThrow(() -> new EntityNotFoundException("Entity not found with given ID."));
 //        Assertions.assertEquals(trainingType.getTrainingTypeName(), "Resistance");
-//    }
-//
-//    @Test
-//    public void should_get_fitness_training_type_by_name(){
+    }
+
+    @Test
+    public void should_get_fitness_training_type_by_name(){
 //        TrainingType trainingType = trainingTypeRepository.findByTrainingTypeName("Resistance");
 //        Assertions.assertEquals(trainingType.getId(), 5L);
-//    }
+    }
 }

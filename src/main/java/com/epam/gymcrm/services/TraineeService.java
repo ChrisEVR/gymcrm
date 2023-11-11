@@ -22,37 +22,39 @@ import java.util.logging.Logger;
 @Service
 public class TraineeService {
     private static final Logger logger = Logger.getLogger(TraineeService.class.getName());
-    private final TraineeRepository traineeRepository;
-    private final TrainingRepository trainingRepository;
-    private final TrainerRepository trainerRepository;
+//    private final TraineeRepository traineeRepository;
+//    private final TrainingRepository trainingRepository;
+//    private final TrainerRepository trainerRepository;
     private final PasswordUtil passwordUtil;
     private final UsernameUtil usernameUtil;
     private final PasswordEncoder passwordEncoder;
 
     public TraineeService(
-            TraineeRepository traineeRepository,
-            TrainingRepository trainingRepository,
-            TrainerRepository trainerRepository,
+//            TraineeRepository traineeRepository,
+//            TrainingRepository trainingRepository,
+//            TrainerRepository trainerRepository,
             PasswordUtil passwordUtil,
             UsernameUtil usernameUtil,
             PasswordEncoder passwordEncoder
     ) {
-        this.traineeRepository = traineeRepository;
-        this.trainingRepository = trainingRepository;
-        this.trainerRepository = trainerRepository;
+//        this.traineeRepository = traineeRepository;
+//        this.trainingRepository = trainingRepository;
+//        this.trainerRepository = trainerRepository;
         this.passwordUtil = passwordUtil;
         this.usernameUtil = usernameUtil;
         this.passwordEncoder = passwordEncoder;
     }
 
     public Trainee getTraineeProfile(String username) {
-        Trainee trainee = traineeRepository.findByUsername(username);
-        logger.info("get trainee:" + trainee);
-        return trainee;
+//        Trainee trainee = traineeRepository.findByUsername(username);
+//        logger.info("get trainee:" + trainee);
+//        return trainee;
+        return null;
     }
 
     public List<Trainee> getTraineesProfile() {
-        return traineeRepository.findAll();
+//        return traineeRepository.findAll();
+        return null;
     }
 
     public Map<String, String> createTrainee(
@@ -64,23 +66,23 @@ public class TraineeService {
         Trainee registeredTrainee;
         Trainee trainee = new Trainee();
         Map<String, String> responseMap = new HashMap<>();
-        List<Trainee> trainees = traineeRepository.findByFirstNameAndLastName(
-                firstName,
-                lastName
-        );
+//        List<Trainee> trainees = traineeRepository.findByFirstNameAndLastName(
+//                firstName,
+//                lastName
+//        );
         String password = passwordUtil.generatePassword();
 
         trainee.setFirstName(firstName);
         trainee.setLastName(lastName);
-        trainee.setUsername(usernameUtil.generateUsername(trainee.getFirstName(), trainee.getLastName(), trainees));
+//        trainee.setUsername(usernameUtil.generateUsername(trainee.getFirstName(), trainee.getLastName(), trainees));
         trainee.setPassword(passwordEncoder.encode(password));
         trainee.setDateOfBirth(dateOfBirth);
         trainee.setAddress(address);
         trainee.setActive(true);
 
-        registeredTrainee = traineeRepository.save(trainee);
+//        registeredTrainee = traineeRepository.save(trainee);
 
-        logger.info("registeredTrainee:" + registeredTrainee);
+//        logger.info("registeredTrainee:" + registeredTrainee);
 
         responseMap.put("username", trainee.getUsername());
         responseMap.put("password", password);
@@ -98,61 +100,65 @@ public class TraineeService {
             String address,
             Boolean isActive
     ) {
-        Trainee trainee = traineeRepository.findByUsername(username);
+//        Trainee trainee = traineeRepository.findByUsername(username);
 
-        trainee.setFirstName(firstName);
-        trainee.setLastName(lastName);
-        trainee.setDateOfBirth(dateOfBirth);
-        trainee.setAddress(address);
-        trainee.setActive(isActive);
+//        trainee.setFirstName(firstName);
+//        trainee.setLastName(lastName);
+//        trainee.setDateOfBirth(dateOfBirth);
+//        trainee.setAddress(address);
+//        trainee.setActive(isActive);
 
-        return traineeRepository.save(trainee);
+//        return traineeRepository.save(trainee);
+        return null;
     }
 
     public void deleteTrainee(String username) {
-        traineeRepository.deleteByUsername(username);
+//        traineeRepository.deleteByUsername(username);
     }
 
     public void activateDeactivateTrainee(String username, Boolean isActive) {
-        Trainee trainee = traineeRepository.findByUsername(username);
-        trainee.setActive(isActive);
-        traineeRepository.save(trainee);
+//        Trainee trainee = traineeRepository.findByUsername(username);
+//        trainee.setActive(isActive);
+//        traineeRepository.save(trainee);
     }
 
     public List<Training> getTrainingList(String username, String trainerName, Date periodFrom, Date periodTo) {
-        Trainee trainee = traineeRepository.findByUsername(username);
+//        Trainee trainee = traineeRepository.findByUsername(username);
 
-        return trainingRepository.findByTrainingDateBetweenAndTraineeIdAndTrainingName(
-                trainee.getId(),
-                trainerName,
-                periodFrom,
-                periodTo
-        );
+//        return trainingRepository.findByTrainingDateBetweenAndTraineeIdAndTrainingName(
+//                trainee.getId(),
+//                trainerName,
+//                periodFrom,
+//                periodTo
+//        );
+        return null;
     }
 
     public List<Trainer> getNotAssignedTrainers(String username) {
-        return trainerRepository.findNotAssignedTrainers(username);
+//        return trainerRepository.findNotAssignedTrainers(username);
+        return null;
     }
 
     public List<Trainer> updateTrainerList(String username, List<String> trainersUsernameList) {
-        Trainee trainee = traineeRepository.findByUsername(username);
-        List<Trainer> trainerList = trainerRepository.findByUsernamesInList(trainersUsernameList);
+//        Trainee trainee = traineeRepository.findByUsername(username);
+//        List<Trainer> trainerList = trainerRepository.findByUsernamesInList(trainersUsernameList);
 
-        for (Trainer trainer :
-                trainerList) {
-            trainer.removeTrainee(trainee);
-        }
+//        for (Trainer trainer :
+//                trainerList) {
+//            trainer.removeTrainee(trainee);
+//        }
 
-        trainee.setTrainers(trainerList);
+//        trainee.setTrainers(trainerList);
 
-        for (Trainer trainer :
-                trainerList) {
-            trainer.addTrainee(trainee);
-        }
-        logger.info("Trainee:" + trainee);
+//        for (Trainer trainer :
+//                trainerList) {
+//            trainer.addTrainee(trainee);
+//        }
+//        logger.info("Trainee:" + trainee);
+//
+//        traineeRepository.save(trainee);
 
-        traineeRepository.save(trainee);
-
-        return trainerList;
+//        return trainerList;
+        return null;
     }
 }
