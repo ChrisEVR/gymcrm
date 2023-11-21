@@ -1,6 +1,7 @@
 package com.epam.gymcrm.controllers;
 
 import com.epam.gymcrm.services.TrainingService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +27,7 @@ public class TrainingController {
             @RequestParam("trainingDate") Date trainingDate,
             @RequestParam("trainingDuration") Long trainingDuration,
             @RequestParam("trainingType") String trainingTypeName
-    ) {
+    ) throws JsonProcessingException {
         trainingService.createTraining(
                 traineeUsername,
                 trainerUsername,

@@ -11,32 +11,31 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserService implements UserDetailsService {
-//    private final UserRepository userRepository;
+    private final UserRepository userRepository;
     private final PasswordUtil passwordUtil;
 
     public UserService(
-//            UserRepository userRepository,
+            UserRepository userRepository,
             PasswordUtil passwordUtil
     ) {
-//        this.userRepository = userRepository;
+        this.userRepository = userRepository;
         this.passwordUtil = passwordUtil;
     }
 
     public void updatePassword(String username, String oldPassword, String newPassword) {
-//        User user = userRepository.findByUsername(username);
+        User user = userRepository.findByUsername(username);
 
-//        if (new BCryptPasswordEncoder().matches(oldPassword, user.getPassword())) {
-//            user.setPassword(new BCryptPasswordEncoder().encode(newPassword));
-//            userRepository.save(user);
+        if (new BCryptPasswordEncoder().matches(oldPassword, user.getPassword())) {
+            user.setPassword(new BCryptPasswordEncoder().encode(newPassword));
+            userRepository.save(user);
 
-//        } else {
+        } else {
             throw new UsernameNotFoundException("Username not found");
-//        }
+        }
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        return userRepository.findByUsername(username);
-        return null;
+        return userRepository.findByUsername(username);
     }
 }
